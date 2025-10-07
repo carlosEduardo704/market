@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-left">
+    <div class="eyebrow">Bem-vindo</div>
+    <h1 id="hero-title">Bem Vindo ao<br/>Mercadinho X</h1>
+    <p class="lead">Sua mercearia online para todas as suas necessidades diárias. Produtos frescos, entrega rápida e preços justos.</p>
+    <a class="btn" href="{% url 'products_list' %}">Comprar agora</a>
+  </div>
+
+  <div class="hero-right" aria-hidden="true">
+    <img src="../../media/grocery_basket1.png" alt="Cesta com frutas e verduras — Mercadinho X">
+  </div>
+</section>
+
+<section class="section" id="products" aria-labelledby="featured-title">
+  <h2 id="featured-title">Produtos em Destaque</h2>
+
+  <div class="products" role="list">
+    <article class="card" role="listitem" aria-label="Apple">
+      <img src="../../media/apple.png" alt="Maçã">
+      <div class="title">Maça</div>
+      <div class="price">R$1.00</div>
+    </article>
+
+    <article class="card" role="listitem" aria-label="Carrot">
+      <img src="../../media/carrot.png" alt="Cenoura">
+      <div class="title">Cenoura</div>
+      <div class="price">R$0.90</div>
+    </article>
+
+    <article class="card" role="listitem" aria-label="Milk">
+      <img src="../../media/milk.png" alt="Leite">
+      <div class="title">Leite</div>
+      <div class="price">R$2.00</div>
+    </article>
+  </div>
+</section>
+
+{% endblock content %}
