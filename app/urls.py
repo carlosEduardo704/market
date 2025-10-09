@@ -19,9 +19,13 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from products.views import HomePageView, ProductListView
+from accounts.views import logout_view, login_view, register_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', HomePageView.as_view(), name='home_page'),
+    path('register/', register_view, name='register'),
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
     path('products/', ProductListView.as_view(), name='products_list')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
