@@ -70,20 +70,26 @@ input:focus {
 <div class="main_div">
   <div class="container">
     <h1>Criar Conta</h1>
-    <form>
-      <label for="name">Nome Completo</label>
-      <input type="text" id="name" name="name" placeholder="Seu nome completo" required>
+    <form method="post">
+      {% csrf_token %}
 
+      {{ user_form.username.errors }}
+      <label for="name">Usuario</label>
+      {{ user_form.username }}
+
+      {{user_form.email.errors }}
       <label for="email">E-mail</label>
-      <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required>
+      {{ user_form.email }}
 
+      {{user_form.password1.errors }}
       <label for="password">Senha</label>
-      <input type="password" id="password" name="password" placeholder="********" required>
+      {{ user_form.password1 }}
 
+      {{user_form.password2.errors }}
       <label for="confirm">Confirmar Senha</label>
-      <input type="password" id="confirm" name="confirm" placeholder="********" required>
+      {{ user_form.password2 }}
 
-      <button type="submit" class="btn">Cadastrar</button>
+      <button type="submit" class="btn" value="Cadastrar">Cadastrar</button>
     </form>
 
     <div class="links">
