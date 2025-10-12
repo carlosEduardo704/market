@@ -102,7 +102,12 @@
           {% if user.is_authenticated %}
             <div>
               <li><strong>Olá, {{ user.username }}</strong></li>
-              <li><a href="{% url 'logout' %}" style="font-size: 15px;">Sair</a></li>
+              <li>
+                <form method="post" action="{% url 'logout' %}">
+                  {% csrf_token %}
+                  <button class=logout_button type="submit">Sair</button>
+                </form>   
+              </li>
             </div>
           {% else %}
             <li><a href="{% url 'login' %}">Login</a></li>
