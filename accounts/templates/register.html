@@ -73,21 +73,21 @@ input:focus {
     <form method="post">
       {% csrf_token %}
 
-      {{ user_form.username.errors }}
+      {{ form.username.errors }}
       <label for="name">Usuario</label>
-      {{ user_form.username }}
+      {{ form.username }}
 
-      {{user_form.email.errors }}
+      {{form.email.errors }}
       <label for="email">E-mail</label>
-      {{ user_form.email }}
+      {{ form.email }}
 
-      {{user_form.password1.errors }}
+      {{form.password1.errors }}
       <label for="password">Senha</label>
-      {{ user_form.password1 }}
+      {{ form.password1 }}
 
-      {{user_form.password2.errors }}
+      {{form.password2.errors }}
       <label for="confirm">Confirmar Senha</label>
-      {{ user_form.password2 }}
+      {{ form.password2 }}
 
       <button type="submit" class="btn" value="Cadastrar">Cadastrar</button>
     </form>
