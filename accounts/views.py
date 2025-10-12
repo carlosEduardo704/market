@@ -1,14 +1,10 @@
-from django.shortcuts import render, redirect
-from .forms import CustomUserCreationForm, CustomAuthenticationForm
+from .forms import CustomUserCreationForm
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
 
 # Create your views here.
-def register_view(request):
-    if request.method =='POST':
-        user_form = CustomUserCreationForm(request.POST)
-        if user_form.is_valid():
-            user_form.save()
-            return redirect('home_page')
-    else:
-        user_form = CustomUserCreationForm()
-    return render(request, 'register.html', {'user_form': user_form})
+class RegisterView(CreateView):
+    template_name = 'register.html'
+    form_class = CustomUserCreationForm
+    success_url = reverse_lazy('login')
 
