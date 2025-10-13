@@ -16,6 +16,7 @@ class Product(models.Model):
     bar_code = models.CharField(max_length=13, unique=True)
     price = models.FloatField(blank=True, null=True)
     department = models.ForeignKey(Department, on_delete=models.PROTECT, related_name='product_department')
+    photo = models.ImageField(upload_to="products/",null=True, blank=True)
     
     def __str__(self):
         return self.name
