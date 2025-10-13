@@ -1,12 +1,8 @@
 from django.shortcuts import render
 from products.models import Product
-from django.views.generic.base import TemplateView
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 # Create your views here.
-class HomePageView(TemplateView):
-    template_name = 'home.html'
-
 
 class ProductListView(ListView):
     model = Product
@@ -21,3 +17,8 @@ class ProductListView(ListView):
             products =products.filter(name__icontains=search)
 
         return products
+
+
+class ProducDetailView(DetailView):
+    model = Product
+    template_name = 'product_detail.html'
