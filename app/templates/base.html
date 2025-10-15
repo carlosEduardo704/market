@@ -98,7 +98,7 @@
       <nav aria-label="Main navigation">
         <ul>
           <li><a class="active" href="{% url 'home_page' %}">Home</a></li>
-          <li><a href="{% url 'products_list' %}">Products</a></li>
+          <li><a href="{% url 'products_list' %}">Produtos</a></li>
           {% if user.is_authenticated %}
             <div>
               <li><strong>Olá, {{ user.username }}</strong></li>
