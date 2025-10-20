@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from products.models import Product
-from django.views.generic import ListView, DetailView
+from .forms import ProductModelForm
+from django.views.generic import ListView, DetailView,CreateView
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 # Create your views here.
 
@@ -22,3 +24,11 @@ class ProductListView(ListView):
 class ProducDetailView(DetailView):
     model = Product
     template_name = 'product_detail.html'
+
+
+class ProductCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = ('products.add_Product', 'products.add_Brand')
+    model = Product
+    template_name = "new_product.html"
+    form_class = ProductModelForm
+    success_url = '/products/'
