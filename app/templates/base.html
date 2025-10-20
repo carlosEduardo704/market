@@ -100,6 +100,11 @@
           <li><a class="active" href="{% url 'home_page' %}">Home</a></li>
           <li><a href="{% url 'products_list' %}">Produtos</a></li>
           {% if user.is_authenticated %}
+
+            {% if user.is_staff %}
+              <li><a href="{% url 'new_product' %}">Adicionar Produtos</a></li>
+            {% endif %}
+
             <div>
               <li><strong>Olá, {{ user.username }}</strong></li>
               <li>
