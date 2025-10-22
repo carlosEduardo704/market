@@ -1,5 +1,84 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>It's Works</h1>
+<style>
+  main {
+    max-width: 1100px;
+    margin: 60px auto;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: 48px;
+  }
+
+  .product-image {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+
+  .product-image img {
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .product-info h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+
+  .price {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .desc {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    transition: opacity 0.2s ease;
+  }
+
+  .btn:hover { opacity: 0.9; }
+</style>
+
+<main>
+  <div class="product-image">
+    {% if product.photo %}
+      <img src="{{product.photo.url}}" alt="{{product.name}}">
+    {% else %}
+      <img src="https://www.pplider.com.br/image/no_image.jpg" alt="{{ product.name }}">
+    {% endif %}
+  </div>
+
+  <div class="product-info">
+    <h1>{{ product.name }}</h1>
+    <div class="price">R$ {{ product.price|floatformat:2 }} / unidade</div>
+    <p class="desc">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae mollitia aspernatur alias quia asperiores
+    </p>
+    <button class="btn" id="add-cart">Adicionar ao Carrinho</button>
+  </div>
+</main>
 {% endblock content %}
