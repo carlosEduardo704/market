@@ -88,6 +88,10 @@
       box-shadow: 0 6px 18px rgba(10,12,20,0.04);
       border: 1px solid rgba(15,23,42,0.04);
     }
+    .card a {
+      text-decoration: none;
+      color:var(--muted);
+    }
     .card img{
       width:120px;
       height:120px;
@@ -121,23 +125,19 @@
   <h2 id="featured-title">Produtos em Destaque</h2>
 
   <div class="products" role="list">
-    <article class="card" role="listitem" aria-label="Apple">
-      <img src="../../media/apple.png" alt="Maçã">
-      <div class="title">Maça</div>
-      <div class="price">R$1.00</div>
-    </article>
-
-    <article class="card" role="listitem" aria-label="Carrot">
-      <img src="../../media/carrot.png" alt="Cenoura">
-      <div class="title">Cenoura</div>
-      <div class="price">R$0.90</div>
-    </article>
-
-    <article class="card" role="listitem" aria-label="Milk">
-      <img src="../../media/milk.png" alt="Leite">
-      <div class="title">Leite</div>
-      <div class="price">R$2.00</div>
-    </article>
+    {% for product in products  %}
+      <article class="card" role="listitem" aria-label="{{ product.name}}">
+        <a href="{% url 'product_detail' product.pk product.bar_code %}">
+            {% if product.photo %}
+              <img src="{{ product.photo.url }}" alt="product.name">
+            {% else %}
+              <img src="https://www.pplider.com.br/image/no_image.jpg" alt="{{ product.name }}">
+            {% endif %}
+            <div class="title">{{ product.name }}</div>
+        </a>
+        <div class="price">R${{ product.price|floatformat:2 }}</div>
+      </article>
+    {% endfor %}
   </div>
 </section>
 
