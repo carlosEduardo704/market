@@ -79,7 +79,10 @@
     <p class="desc">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae mollitia aspernatur alias quia asperiores
     </p>
-    <button class="btn" id="add-cart">Adicionar ao Carrinho</button>
+    <form action="{% url 'add_to_cart' product.pk %}" method="post">
+      {% csrf_token %}
+      <button class="btn" id="add-cart" type="submit">Adicionar ao Carrinho</button>
+    </form>
   </div>
 </main>
 {% endblock content %}

@@ -194,7 +194,12 @@ h1 {
             {% endif %}
           </a>
           <div class="price">R${{product.price|floatformat:2}}</div>
-          <button class="btn add-cart">Adicionar</button>
+          <form action="{% url 'add_to_cart' product.pk %}" method="post">
+            {% csrf_token %}
+
+            <button class="btn add-cart" type="submit">Adicionar</button>
+
+          </form>
         </div>
       {% endfor %}
     {% else %}
