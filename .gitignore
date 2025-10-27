@@ -11,3 +11,6 @@ wheels/
 
 #media folder
 media/
+
+# database
+db.sqlite3
