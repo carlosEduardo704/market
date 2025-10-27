@@ -11,4 +11,5 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html', extra_context={'products': Product.objects.all()}), name='home_page'),
     path('', include('accounts.urls')),
     path('', include('products.urls')),
+    path('cart/', include('cart.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
