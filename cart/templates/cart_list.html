@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    main {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 0 32px;
+    }
+
+    h1 {
+      font-size: 32px;
+      text-align: center;
+      margin-bottom: 40px;
+      font-weight: 700;
+    }
+
+    /* TABELA DO CARRINHO */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 16px;
+      text-align: center;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+      background: #f3f4f6;
+      font-weight: 600;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .qty {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .qty button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      width: 26px;
+      height: 26px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .qty button:hover { opacity: 0.85; }
+
+    .remove {
+      background: none;
+      border: none;
+      color: #ef4444;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    /* TOTAL E AÇÕES */
+    .cart-summary {
+      margin-top: 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      padding: 24px 32px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      font-weight: 600;
+    }
+
+    .total {
+      font-size: 20px;
+    }
+
+    .checkout-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 14px 22px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .checkout-btn:hover { opacity: 0.9; }
+</style>
+<main>
+  <h1>Seu Carrinho de Compras</h1>
+  {% if itens %}
+    <table id="cart-table">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Preço</th>
+          <th>Quantidade</th>
+          <th>Total</th>
+          <th>Remover</th>
+        </tr>
+      </thead>
+      <tbody id="cart-body">
+        {% for item in itens %}
+          <tr>
+            <td>
+              <div style="display: grid; justify-content: center;">
+                {{ item.product.name }}
+                <img src="{{item.product.photo.url}}" alt="{{item.name}}">
+              </div>
+            </td>
+            <td>R$ {{ item.product.price|floatformat:2 }}</td>
+            <td>
+              <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
+                <form action="{% url 'decrease_quantity' item.pk %}" method="post">
+                  {% csrf_token %}
+                  {% if item.quantity > 1 %}
+                  <button type="submit"><strong>-</strong></button>
+                  {% else %}
+                  <button type="submit" onclick="return confirm('Tem certeza que deseja remover este item do carrinho?')">
+                    <strong>-</strong>
+                  </button>
+
+                  {% endif %}
+                </form>
+                {{ item.quantity }}
+                <form action="{% url 'add_to_cart' item.product.pk %}" method="post">
+                  {% csrf_token %}
+                  <button type="submit"><strong>+</strong></button>
+                </form>
+
+              </div>
+            </td>
+            <td>R$ {{ item.get_subtotal|floatformat:2 }}</td>
+            <td>
+              <form action="{% url 'remove_from_cart' item.pk %}" method="post">
+                {% csrf_token %}
+                <button type="submit" title="Remover" onclick="return confirm('Tem certeza que deseja remover este item do carrinho?')">
+                  Remover
+                </button>
+              </form>
+            </td>
+          </tr>
+            {% endfor %}
+      </tbody>
+    </table>
+
+  <div class="cart-summary">
+    <div class="total" id="cart-total">Total: R$ {{cart.get_total|floatformat:2}}</div>
+    <button class="checkout-btn" id="checkout">Finalizar Compra</button>
+  </div>
+  {% else %}
+    <p>Seu carrinho está vazio.</p>
+  {% endif %}
+  
+
+  </main>
+  
+{% endblock content %}
+
+
+
+<!-- app carrinho/templates/carrinho/detalhe.html
+<h1>Seu carrinho de compras</h1>
+{% if carrinho %}
+    <table>
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Preço</th>
+                <th>Quantidade</th>
+                <th>Total</th>
+                <th>Remover</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in carrinho %}
+                <tr>
+                    <td>{{ item.produto.nome }}</td>
+                    <td>R$ {{ item.price|floatformat:2 }}</td>
+                    <td>{{ item.quantidade }}</td>
+                    <td>R$ {{ item.total }}</td>
+                    <td>
+                        <form action="{% url 'remove_from_cart' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="produto_id" value="{{ item.produto.id }}">
+                            <button type="submit">Remover</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">Total</td>
+                <td>R$ {{ carrinho.get_total_preco }}</td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+{% else %}
+    <p>Seu carrinho está vazio.</p>
+{% endif %}
+<p><a href="/">Continuar comprando</a></p> -->
