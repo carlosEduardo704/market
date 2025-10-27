@@ -65,7 +65,20 @@
       padding:6px 8px;
       border-radius:8px;
     }
-    /* nav a.active{ color:#111827; font-weight:700; } */
+    
+
+     /* CART ICON */
+    .cart-btn {
+      position: relative;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      font-size: 18px;
+      cursor: pointer;
+    }
 
     /* Footer */
     footer{
@@ -105,6 +118,9 @@
               <li><a href="{% url 'new_product' %}">Adicionar Produtos</a></li>
             {% endif %}
 
+            {% if user.is_authenticated %}
+              <li><button class="cart-btn" id="cart-btn"><a href="{% url 'cart' %}">🛒</a></button></li>
+            {% endif %}
             <div>
               <li><strong>Olá, {{ user.username }}</strong></li>
               <li>
@@ -118,6 +134,7 @@
             <li><a href="{% url 'login' %}">Login</a></li>
             <li><a href="{% url 'register' %}">Cadastrar</a></li>
           {% endif %}
+
           
         </ul>
       </nav>
