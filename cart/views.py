@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404, redirect
-from django.http import HttpResponseForbidden # Para segurança
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponseForbidden, HttpResponseRedirect # Para segurança
 from .models import Cart, CartItem
 from products.models import Product
 from .mixins import CartMixin 
@@ -53,7 +53,7 @@ class AddToCartView(LoginRequiredMixin, CartMixin, View):
             item.quantity += quantity
             item.save()
             
-        return redirect('/cart/')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 class RemoveFromCartView(LoginRequiredMixin, CartMixin, View):
@@ -72,8 +72,8 @@ class RemoveFromCartView(LoginRequiredMixin, CartMixin, View):
             
         # Remove Item
         item.delete()
-        
-        return redirect('/cart/')
+
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 class DecreaseItemQuantityView(LoginRequiredMixin, CartMixin, View):
@@ -96,4 +96,4 @@ class DecreaseItemQuantityView(LoginRequiredMixin, CartMixin, View):
         else:
             item.delete()
 
-        return redirect('/cart/')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER')) 
