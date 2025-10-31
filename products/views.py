@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from products.models import Product
 from .forms import ProductModelForm
-from django.views.generic import ListView, DetailView,CreateView
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.urls import reverse_lazy
 
 # Create your views here.
 
@@ -32,3 +33,13 @@ class ProductCreateView(PermissionRequiredMixin, CreateView):
     template_name = "new_product.html"
     form_class = ProductModelForm
     success_url = '/products/'
+
+
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
+    model = Product
+    template_name = 'edit_product.html'
+    context_object_name = 'products'
+    form_class = ProductModelForm
+    
+    def get_success_url(self):
+        return reverse_lazy('product_detail', kwargs={'pk': self.object.pk, 'bar_code': self.object.bar_code} )
