@@ -88,7 +88,7 @@ select {
 <div class="main_div">
   <div class="container">
     <h1>Adicionar Produto</h1>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <label for="name">Nome:</label>
       {{ form.name }}
