@@ -12,6 +12,11 @@ class Cart(models.Model):
     def get_total(self):
         return sum(item.get_subtotal for item in self.itens.all())
 
+    
+    @property
+    def get_total_itens(self):
+        return sum([item.quantity for item in self.itens.all()])
+
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='itens')
     product = models.ForeignKey(Product, on_delete=models.CASCADE) # Altere 'app_produtos.Produto'
