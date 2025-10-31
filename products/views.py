@@ -35,7 +35,8 @@ class ProductCreateView(PermissionRequiredMixin, CreateView):
     success_url = '/products/'
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = ('products.change_Product', 'products.change_Brand')
     model = Product
     template_name = 'edit_product.html'
     context_object_name = 'products'
