@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class Department(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
@@ -12,7 +12,7 @@ class Department(models.Model):
 
 class Product(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=100)
     bar_code = models.CharField(max_length=13, unique=True)
     price = models.FloatField(blank=True, null=True)
     department = models.ForeignKey(Department, on_delete=models.PROTECT, related_name='product_department')
