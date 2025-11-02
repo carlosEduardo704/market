@@ -128,9 +128,13 @@
         {% for item in itens %}
           <tr>
             <td>
-              <div style="display: grid; justify-content: center;">
-                {{ item.product.name }}
-                <img src="{{item.product.photo.url}}" alt="{{item.name}}">
+              <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-around">
+                <div>
+                  <img src="{{item.product.photo.url}}" alt="{{item.name}}">
+                </div>
+                <div style="width: 50%;">
+                  {{ item.product.name }}
+                </div>
               </div>
             </td>
             <td>R$ {{ item.product.price|floatformat:2 }}</td>
