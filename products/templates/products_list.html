@@ -39,6 +39,15 @@ h1 {
   outline: none;
   box-shadow: 0 0 0 3px rgba(46,139,58,0.2);
 }
+/* PRODUCT FILTER */
+.product_filter {
+  display: flex;
+  justify-content: space-between;
+}
+
+.product_filter div {
+  margin-bottom: 2%;
+}
 
 /* PRODUCTS */
 .products {
@@ -184,30 +193,49 @@ h1 {
   </div>
 
   <!-- Lista de produtos -->
-  <div class="products" id="product-list">
-    {% if products %}
-      {% for product in products %}
-        <div class="card" data-name="{{product.name}}">
-          <a href="{% url 'product_detail' product.pk product.bar_code %}">
-            <div class="title">{{ product.name}}</div>
-            {% if product.photo %}
-              <img src="{{ product.photo.url }}" alt="product.name">
-            {% else %}
-              <img src="https://www.pplider.com.br/image/no_image.jpg" alt="{{ product.name }}">
-            {% endif %}
-          </a>
-          <div class="price">R${{product.price|floatformat:2}}</div>
-          <form action="{% url 'add_to_cart' product.pk %}" method="post">
-            {% csrf_token %}
+  {% if products %}
+    <div class="product_filter">
+      <div>
+        <label for="select_itens">Classificar por:</label>
+        <select name="produtos" id="">
+          <option value="mais_vendidos">Mais vendidos</option>
+          <option value="preco_menor_maior">Preço: Do menor para o maior</option>
+          <option value="preco_maior_menor">Preço: Do maior para o menor</option>
+        </select>
+      </div>
 
-            <button class="btn add-cart" type="submit">Adicionar</button>
+      <div>
+        <label for="select_department">Departamento:</label>
+        <select name="select_department" id="">
+            <option value="N/D">--</option>
+        </select>
+      </div>
+    </div>
 
-          </form>
-        </div>
-      {% endfor %}
-    {% else %}
-      <p>Nenhum produto encontrado!</p>
-    {% endif %}
+    <div class="products" id="product-list">
+        {% for product in products %}
+          <div class="card" data-name="{{product.name}}">
+            <a href="{% url 'product_detail' product.pk product.bar_code %}">
+              <div class="title">{{ product.name}}</div>
+              {% if product.photo %}
+                <img src="{{ product.photo.url }}" alt="product.name">
+              {% else %}
+                <img src="https://www.pplider.com.br/image/no_image.jpg" alt="{{ product.name }}">
+              {% endif %}
+            </a>
+            <div class="price">R${{product.price|floatformat:2}}</div>
+            <form action="{% url 'add_to_cart' product.pk %}" method="post">
+              {% csrf_token %}
+
+              <button class="btn add-cart" type="submit">Adicionar</button>
+
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+  {% else %}
+    <p>Nenhum produto encontrado!</p>
+  {% endif %}
 </main>
 
 {% endblock content %}
