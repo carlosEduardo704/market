@@ -35,12 +35,17 @@ LOGIN_URL = '/login/'
 # Application definition
 
 INSTALLED_APPS = [
+    # Default django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Third-party apps
+    'django_filters',
+    'widget_tweaks',
+    # My apps
     'products',
     'accounts',
     'cart',
