@@ -4,6 +4,7 @@ from .forms import ProductModelForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.urls import reverse_lazy
+from .filters import ProductFilter
 
 # Create your views here.
 
@@ -12,15 +13,19 @@ class ProductListView(ListView):
     template_name = 'products_list.html'
     context_object_name = 'products'
 
-    def get_queryset(self):
-        products = super().get_queryset().order_by('name')
-        search = self.request.GET.get('search')
+    # def get_queryset(self):
+    #     queryset = super().get_queryset().filter(department=True)
 
-        if search:
-            products =products.filter(name__icontains=search)
+    #     return queryset
 
-        return products
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
+        filtro = ProductFilter(self.request.GET, queryset=self.get_queryset())
+        context['products'] = filtro.qs
+        context['filtro'] = filtro
+
+        return context
 
 class ProducDetailView(DetailView):
     model = Product
