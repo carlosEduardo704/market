@@ -1,8 +1,10 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
 
 {% block title_content %}
   <title>Mercadinho X — Produtos</title>
 {% endblock title_content %}
+
 {% block content %}
 
 <style>
@@ -192,47 +194,49 @@ h1 {
     <input type="text" id="search" placeholder="🔍 Pesquise por nome do produto..." />
   </div>
 
+  <!-- Filtros de produtos -->
+  <div class="product_filter">
+    <form method="GET" style="display: flex; justify-content: space-between; width: 100%;">
+      {% for field in filtro.form %}
+        {% if field.name == 'ordenacao' %}
+        <div>
+          <label for="field.id_for_label" class="form-label">{{ field.label}}</label>
+          {% render_field field class="form-control" onchange="this.form.submit()" %}
+        </div>
+          
+        {% endif %}
+        {% if field.name == 'department' %}
+          <div>
+            <label for="field.id_for_label" class="form-label">{{ field.label}}</label>
+            {% render_field field class="form-control" onchange="this.form.submit()" %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </form>
+  </div>
   <!-- Lista de produtos -->
   {% if products %}
-    <div class="product_filter">
-      <div>
-        <label for="select_itens">Classificar por:</label>
-        <select name="produtos" id="">
-          <option value="mais_vendidos">Mais vendidos</option>
-          <option value="preco_menor_maior">Preço: Do menor para o maior</option>
-          <option value="preco_maior_menor">Preço: Do maior para o menor</option>
-        </select>
-      </div>
-
-      <div>
-        <label for="select_department">Departamento:</label>
-        <select name="select_department" id="">
-            <option value="N/D">--</option>
-        </select>
-      </div>
-    </div>
-
     <div class="products" id="product-list">
-        {% for product in products %}
-          <div class="card" data-name="{{product.name}}">
-            <a href="{% url 'product_detail' product.pk product.bar_code %}">
-              <div class="title">{{ product.name}}</div>
-              {% if product.photo %}
-                <img src="{{ product.photo.url }}" alt="product.name">
-              {% else %}
-                <img src="https://www.pplider.com.br/image/no_image.jpg" alt="{{ product.name }}">
-              {% endif %}
-            </a>
-            <div class="price">R${{product.price|floatformat:2}}</div>
-            <form action="{% url 'add_to_cart' product.pk %}" method="post">
-              {% csrf_token %}
+      {% for product in products %}
+        <div class="card" data-name="{{product.name}}">
+          <a href="{% url 'product_detail' product.pk product.bar_code %}">
+            <div class="title">{{ product.name}}</div>
+            {% if product.photo %}
+              <img src="{{ product.photo.url }}" alt="product.name">
+            {% else %}
+              <img src="https://www.pplider.com.br/image/no_image.jpg" alt="{{ product.name }}">
+            {% endif %}
+          </a>
+          <div class="price">R${{product.price|floatformat:2}}</div>
+          <form action="{% url 'add_to_cart' product.pk %}" method="post">
+            {% csrf_token %}
 
-              <button class="btn add-cart" type="submit">Adicionar</button>
+            <button class="btn add-cart" type="submit">Adicionar</button>
 
-            </form>
-          </div>
-        {% endfor %}
-      </div>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
   {% else %}
     <p>Nenhum produto encontrado!</p>
   {% endif %}
