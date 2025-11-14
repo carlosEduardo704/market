@@ -1,5 +1,5 @@
 from django.db import models
-from django.conf import settings 
+from django.conf import settings
 from products.models import Product
 
 
@@ -19,10 +19,10 @@ class Cart(models.Model):
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='itens')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE) # Altere 'app_produtos.Produto'
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
     
     @property
     def get_subtotal(self):
-        # Assumindo que seu Produto tem um campo 'preco'
+        
         return self.product.price * self.quantity
