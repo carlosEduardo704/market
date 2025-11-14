@@ -175,7 +175,9 @@
 
   <div class="cart-summary">
     <div class="total" id="cart-total">Total: R$ {{cart.get_total|floatformat:2}}</div>
-    <button class="checkout-btn" id="checkout">Finalizar Compra</button>
+    <a href="{% url 'checkout' %}">
+      <button class="checkout-btn" id="checkout">Finalizar Compra</button>
+    </a>
   </div>
   {% else %}
     <p>Seu carrinho está vazio.</p>
@@ -185,48 +187,3 @@
   </main>
   
 {% endblock content %}
-
-
-
-<!-- app carrinho/templates/carrinho/detalhe.html
-<h1>Seu carrinho de compras</h1>
-{% if carrinho %}
-    <table>
-        <thead>
-            <tr>
-                <th>Produto</th>
-                <th>Preço</th>
-                <th>Quantidade</th>
-                <th>Total</th>
-                <th>Remover</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in carrinho %}
-                <tr>
-                    <td>{{ item.produto.nome }}</td>
-                    <td>R$ {{ item.price|floatformat:2 }}</td>
-                    <td>{{ item.quantidade }}</td>
-                    <td>R$ {{ item.total }}</td>
-                    <td>
-                        <form action="{% url 'remove_from_cart' %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="produto_id" value="{{ item.produto.id }}">
-                            <button type="submit">Remover</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3">Total</td>
-                <td>R$ {{ carrinho.get_total_preco }}</td>
-                <td></td>
-            </tr>
-        </tfoot>
-    </table>
-{% else %}
-    <p>Seu carrinho está vazio.</p>
-{% endif %}
-<p><a href="/">Continuar comprando</a></p> -->
