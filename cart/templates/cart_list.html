@@ -175,7 +175,9 @@
 
   <div class="cart-summary">
     <div class="total" id="cart-total">Total: R$ {{cart.get_total|floatformat:2}}</div>
-    <button class="checkout-btn" id="checkout">Finalizar Compra</button>
+    <a href="{% url 'checkout' %}">
+      <button class="checkout-btn" id="checkout">Finalizar Compra</button>
+    </a>
   </div>
   {% else %}
     <p>Seu carrinho está vazio.</p>
