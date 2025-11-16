@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+{% block title_content %}
+  <title>Finalizar Compra — Mercadinho X</title>
+{% endblock title_content %}
+
+{% block content %}
+  <style>
+    main {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 0 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    h1 {
+      grid-column: 1 / -1;
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+    
+    #checkout_form {
+      background: #fff;
+      padding: 32px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .order-summary {
+      background: #fff;
+      padding: 32px;
+      max-height: 100%;  
+      width: 120%;
+      overflow-y: auto;
+      margin-bottom: 12px;         
+      padding-right: 8px;  
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-family: inherit;
+      font-size: 15px;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(46, 139, 58, 0.2);
+    }
+
+    .table_itens table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .table_itens th, td {
+      padding: 16px;
+      text-align: center;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .table_itens th {
+      background: #f3f4f6;
+      font-weight: 600;
+    }
+
+    .table_itens tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table_itens img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .order-item span {
+      font-weight: 500;
+    }
+
+    .order-total {
+      border-top: 1px solid #e5e7eb;
+      padding-top: 12px;
+      margin-top: 10px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      font-size: 18px;
+    }
+
+    .confirm-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 24px;
+    }
+
+    .confirm-btn:hover {
+      opacity: 0.9;
+    }
+    
+  </style>
+  <main>
+    <h1>Finalizar Compra</h1>
+
+    {% if cart and cart.itens.exists %}
+    
+      <!-- <div style="max-width: 448px; max-height: 677px;">
+        FORMULÁRIO DE ENDEREÇO
+        <form id="checkout-form">
+          {% csrf_token %}
+
+          <h2>Endereço de Entrega</h2>
+          <label for="nome">Nome Completo</label>
+          <input type="text" id="nome" required>
+
+          <label for="cep">CEP</label>
+          <input type="text" id="cep" placeholder="00000-000" required>
+
+          <label for="endereco">Endereço</label>
+          <input type="text" id="endereco" required>
+          
+          <label for="cidade">Cidade</label>
+          <input type="text" id="cidade" required>
+
+          <label for="estado">Estado</label>
+          <input type="text" id="estado" required>
+
+
+          <h2>Forma de Pagamento</h2>
+          <select id="pagamento" required>
+            <option value="boleto">Boleto Bancário</option>
+          </select>
+
+          <form method="post">
+            {% csrf_token %}
+            
+            <button type="submit" class="confirm-btn">Confirmar Compra</button>
+          </form>
+        </form>
+      </div> -->
+      <div style="max-width: 448px; max-height: 677px;">
+        <!-- RESUMO DO PEDIDO -->
+        <div class="order-summary">
+          <h2>Resumo do Pedido</h2>
+          <div id="order-items">
+            <table id="cart-table" class="table_itens">
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Preço</th>
+                  <th>Quantidade</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody id="cart-body">
+                {% for item in cart.itens.all %}
+                  <tr>
+                    <td>
+                      <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-around">
+                        <div>
+                          <img src="{{item.product.photo.url}}" alt="{{item.name}}">
+                        </div>
+                        <div style="width: 50%;">
+                          {{ item.product.name }}
+                        </div>
+                      </div>
+                    </td>
+                    <td>R$ {{ item.product.price|floatformat:2 }}</td>
+                    <td>
+                      <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
+                        <form action="{% url 'decrease_quantity' item.pk %}" method="post">
+                          {% csrf_token %}
+                          {% if item.quantity > 1 %}
+                          <button type="submit"><strong>-</strong></button>
+                          {% else %}
+                          <button type="submit" onclick="return confirm('Tem certeza que deseja remover este item do carrinho?')">
+                            <strong>-</strong>
+                          </button>
+    
+                          {% endif %}
+                        </form>
+                        {{ item.quantity }}
+                        <form action="{% url 'add_to_cart' item.product.pk %}" method="post">
+                          {% csrf_token %}
+                          <button type="submit"><strong>+</strong></button>
+                        </form>
+    
+                      </div>
+                    </td>
+                    <td>R$ {{ item.get_subtotal|floatformat:2 }}</td>
+                  </tr>
+                    {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="order-total">
+            <span>Total:</span>
+            <span id="order-total">R$ {{ cart.get_total|floatformat:2 }}</span>
+          </div>
+          <form method="post">
+            {% csrf_token %}
+            {{ form.name }}
+            <button type="submit">Confirmar</button>
+          </form>
+        </div>
+      </div>
+      
+    {% else %}
+
+      <div id="summary-items" class="order-summary">
+        <h2>Resumo do Pedido</h2>
+        <div id="order-items">
+          <p>Seu carrinho está vazio.</p>
+        </div>
+        <div class="order-total">
+          <span>Total:</span>
+          <span id="order-total">R$ 0,00</span>
+        </div>
+      </div>
+
+    {% endif %}
+    
+  </main>
+
+{% endblock content %}
