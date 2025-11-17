@@ -8,17 +8,14 @@ from django.views.generic.edit import FormView
 from cart.models import Cart
 from order.models import Order, OrderItem
 # Forms
-from django.forms import Form
+from order.forms import OrderModelForm
 # Create your views here.
-
-class OrderForm(Form):
-    pass
 
 
 class CheckoutFormView(LoginRequiredMixin, FormView):
     template_name = 'checkout.html'
-    form_class = OrderForm
-    success_url = reverse_lazy('home')
+    form_class = OrderModelForm
+    success_url = '/'
 
     def get_cart(self):
         if self.request.user.is_authenticated:
@@ -34,11 +31,12 @@ class CheckoutFormView(LoginRequiredMixin, FormView):
         cart = self.get_cart()
 
         if not cart or not cart.itens.exists():
-            return redirect('')
+            return redirect('/')
 
         with transaction.atomic():
 
-            new_order = Order.objects.create()
+            new_order = form.save(commit=False)
+            new_order.save()
 
             total_order = 0
 
@@ -61,13 +59,15 @@ class CheckoutFormView(LoginRequiredMixin, FormView):
             new_order.save()
 
             cart.itens.all().delete()
-        
+
+            return redirect('/')
+
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
         # Adiciona o objeto carrinho para que o template possa listar os itens
-        context['cart'] = self.get_cart() 
+        context['cart'] = self.get_cart()
         
         return context
