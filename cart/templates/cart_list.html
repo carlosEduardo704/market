@@ -97,6 +97,20 @@
       font-size: 20px;
     }
 
+    .clean-cart-btn{
+      background: red;
+      color: white;
+      border: none;
+      padding: 14px 22px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .clean-cart-btn:hover { opacity: 0.9; }
+
     .checkout-btn {
       background: var(--accent);
       color: white;
@@ -175,6 +189,12 @@
 
   <div class="cart-summary">
     <div class="total" id="cart-total">Total: R$ {{cart.get_total|floatformat:2}}</div>
+    <form action="{% url 'remove_all_itens_from_cart' cart.id %}" method="post">
+      {% csrf_token %}
+      <button class="clean-cart-btn" id="clean-cart" type="submit" onclick="return confirm('Tem certeza que deseja remover todos os itens do carrinho?')">
+        Limpar Carrinho
+      </button>
+    </form>
     <a href="{% url 'checkout' %}">
       <button class="checkout-btn" id="checkout">Finalizar Compra</button>
     </a>
