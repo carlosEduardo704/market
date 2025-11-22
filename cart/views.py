@@ -97,3 +97,18 @@ class DecreaseItemQuantityView(LoginRequiredMixin, CartMixin, View):
             item.delete()
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER')) 
+
+
+class RemoveAllItensFromCartView(LoginRequiredMixin, CartMixin, View):
+    # Remove todos os itens do carrinho.
+    
+    def post(self, request, cart_id, *args, **kwargs):
+        cart = self.get_cart()
+        cart = get_object_or_404(Cart, id=cart_id)
+        
+        if cart.usuario != self.request.user:
+            return HttpResponseForbidden("Acesso negado!")
+        else:
+            cart.itens.all().delete()
+    
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
