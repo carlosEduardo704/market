@@ -7,14 +7,18 @@
 {% block content %}
   <style>
     main {
-      max-width: 1000px;
+      max-width: 100%;
       margin: 60px auto;
       padding: 0 32px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .main-div {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 40px;
     }
-
     h1 {
       grid-column: 1 / -1;
       text-align: center;
@@ -23,21 +27,23 @@
       font-weight: 700;
     }
     
-    #checkout_form {
+    .order-summary {
       background: #fff;
       padding: 32px;
+      height: 60vh;
+      overflow-y: auto;
+      margin-bottom: 12px;
+      padding-right: 8px;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
     }
 
-    .order-summary {
+    .order-address {
       background: #fff;
       padding: 32px;
-      max-height: 100%;  
-      width: 120%;
-      overflow-y: auto;
-      margin-bottom: 12px;         
-      padding-right: 8px;  
+      height: 60vh;
+      margin-bottom: 12px;
+      padding-right: 8px;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
     }
@@ -73,7 +79,6 @@
     }
 
     .table_itens table {
-      width: 100%;
       border-collapse: collapse;
       background: #fff;
       border-radius: var(--radius);
@@ -113,27 +118,28 @@
     }
 
     .order-total {
-      border-top: 1px solid #e5e7eb;
+      align-items: center;
       padding-top: 12px;
-      margin-top: 10px;
       font-weight: 700;
       display: flex;
       justify-content: space-between;
       font-size: 18px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      background: #fff;
+      padding: 24px 32px;
     }
-
+    
     .confirm-btn {
       background: var(--accent);
-      color: #fff;
+      color: white;
       border: none;
-      width: 100%;
-      padding: 14px;
+      padding: 14px 22px;
       border-radius: 8px;
       font-weight: 600;
       font-size: 16px;
       cursor: pointer;
-      transition: opacity 0.2s;
-      margin-top: 24px;
+      transition: opacity 0.2s ease;
     }
 
     .confirm-btn:hover {
@@ -144,10 +150,10 @@
   <main>
     <h1>Finalizar Compra</h1>
 
-    {% if cart and cart.itens.exists %}
-    
-      <!-- <div style="max-width: 448px; max-height: 677px;">
-        FORMULÁRIO DE ENDEREÇO
+    <div class="main-div">
+      {% if cart and cart.itens.exists %}
+      <!-- FORMULÁRIO DE ENDEREÇO -->
+      <div class="order-address">
         <form id="checkout-form">
           {% csrf_token %}
 
@@ -166,86 +172,79 @@
 
           <label for="estado">Estado</label>
           <input type="text" id="estado" required>
-
-
-          <h2>Forma de Pagamento</h2>
-          <select id="pagamento" required>
-            <option value="boleto">Boleto Bancário</option>
-          </select>
-
-          <form method="post">
-            {% csrf_token %}
-            
-            <button type="submit" class="confirm-btn">Confirmar Compra</button>
-          </form>
         </form>
-      </div> -->
-      <div style="max-width: 448px; max-height: 677px;">
-        <!-- RESUMO DO PEDIDO -->
-        <div class="order-summary">
-          <h2>Resumo do Pedido</h2>
-          <div id="order-items">
-            <table id="cart-table" class="table_itens">
-              <thead>
+      </div>
+      <!-- RESUMO DO PEDIDO -->
+      <div class="order-summary">
+        <h2>Resumo do Pedido</h2>
+        <div id="order-items">
+          <table id="cart-table" class="table_itens" style="width: 100%;">
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Preço</th>
+                <th>Quantidade</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="cart-body" >
+              {% for item in cart.itens.all %}
                 <tr>
-                  <th>Produto</th>
-                  <th>Preço</th>
-                  <th>Quantidade</th>
-                  <th>Total</th>
+                  <td>
+                    <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-around">
+                      <div>
+                        <img src="{{item.product.photo.url}}" alt="{{item.name}}">
+                      </div>
+                      <div style="width: 50%;">
+                        {{ item.product.name }}
+                      </div>
+                    </div>
+                  </td>
+                  <td>R$ {{ item.product.price|floatformat:2 }}</td>
+                  <td>
+                    <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
+                      <form action="{% url 'decrease_quantity' item.pk %}" method="post">
+                        {% csrf_token %}
+                        {% if item.quantity > 1 %}
+                        <button type="submit"><strong>-</strong></button>
+                        {% else %}
+                        <button type="submit" onclick="return confirm('Tem certeza que deseja remover este item do carrinho?')">
+                          <strong>-</strong>
+                        </button>
+  
+                        {% endif %}
+                      </form>
+                      {{ item.quantity }}
+                      <form action="{% url 'add_to_cart' item.product.pk %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit"><strong>+</strong></button>
+                      </form>
+  
+                    </div>
+                  </td>
+                  <td>R$ {{ item.get_subtotal|floatformat:2 }}</td>
                 </tr>
-              </thead>
-              <tbody id="cart-body">
-                {% for item in cart.itens.all %}
-                  <tr>
-                    <td>
-                      <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-around">
-                        <div>
-                          <img src="{{item.product.photo.url}}" alt="{{item.name}}">
-                        </div>
-                        <div style="width: 50%;">
-                          {{ item.product.name }}
-                        </div>
-                      </div>
-                    </td>
-                    <td>R$ {{ item.product.price|floatformat:2 }}</td>
-                    <td>
-                      <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
-                        <form action="{% url 'decrease_quantity' item.pk %}" method="post">
-                          {% csrf_token %}
-                          {% if item.quantity > 1 %}
-                          <button type="submit"><strong>-</strong></button>
-                          {% else %}
-                          <button type="submit" onclick="return confirm('Tem certeza que deseja remover este item do carrinho?')">
-                            <strong>-</strong>
-                          </button>
-    
-                          {% endif %}
-                        </form>
-                        {{ item.quantity }}
-                        <form action="{% url 'add_to_cart' item.product.pk %}" method="post">
-                          {% csrf_token %}
-                          <button type="submit"><strong>+</strong></button>
-                        </form>
-    
-                      </div>
-                    </td>
-                    <td>R$ {{ item.get_subtotal|floatformat:2 }}</td>
-                  </tr>
-                    {% endfor %}
-              </tbody>
-            </table>
-          </div>
-          <div class="order-total">
-            <span>Total:</span>
-            <span id="order-total">R$ {{ cart.get_total|floatformat:2 }}</span>
-          </div>
-          <form method="post">
-            {% csrf_token %}
-            {{ form.name }}
-            <button type="submit">Confirmar</button>
-          </form>
+                  {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
+
+    </div>
+
+    <div class="order-total" style="justify-content: space-around;">
+      <form method="post">
+        {% csrf_token %}
+        <h2>Forma de Pagamento</h2>
+        {{ form.payment_method }}
+        <button type="submit" class="confirm-btn">Confirmar Compra</button>
+      </form>
+      <div style="display: flex; justify-content: center; font-size: 30px; color: green;">
+        <span>Total:</span>
+        <span id="order-total">R$ {{ cart.get_total|floatformat:2 }}</span>
+      </div>
+    </div>
+      
       
     {% else %}
 
