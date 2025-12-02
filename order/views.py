@@ -1,12 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
 # Django-Views
 from django.views.generic.edit import FormView
 # Models
 from cart.models import Cart
-from order.models import Order, OrderItem
+from order.models import OrderItem
 # Forms
 from order.forms import OrderModelForm
 # Create your views here.
