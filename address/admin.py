@@ -1,3 +1,7 @@
 from django.contrib import admin
+from address.models import Adress
+from address.forms import AdressModelForm
 
-# Register your models here.
+class AdressAdmin(admin.ModelAdmin):
+    form = AdressModelForm
+    list_display = ("user", "address_name", "street", "city")
