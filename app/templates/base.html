@@ -92,6 +92,62 @@
       font-weight: 600;
     }
 
+    /* Container do usuário */
+    .user-menu {
+      position: relative;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    /* Texto com nome */
+    .user-name {
+      color: #111827;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: background 0.2s ease;
+    }
+
+    .user-name:hover {
+      background: #f3f4f6;
+    }
+
+    /* Dropdown */
+    .user-dropdown {
+      position: absolute;
+      top: 42px;
+      right: 0;
+      background: #fff;
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      display: none;
+      flex-direction: column;
+      min-width: 180px;
+      padding: 10px 0;
+      z-index: 200;
+    }
+
+    .user-dropdown a,
+    .user-dropdown button {
+      text-decoration: none;
+      padding: 12px 18px;
+      color: #374151;
+      font-size: 15px;
+      text-align: left;
+      border: none;
+      background: none;
+      width: 100%;
+      display: block;
+      cursor: pointer;
+    }
+
+    .user-dropdown a:hover,
+    .user-dropdown button:hover {
+      background: #f3f4f6;
+    }
+
     /* Footer */
     footer{
       margin-top:46px;
@@ -130,41 +186,44 @@
               <li><a href="{% url 'new_product' %}">Adicionar Produtos</a></li>
             {% endif %}
 
-            {% if user.is_authenticated %}
-              {% if cart_total_itens > 0 %}
-                <li>
-                  <a href="{% url 'cart' %}">
-                    <button class="cart-btn" id="cart-btn">
-                      🛒<span class="cart-count" id="cart-count">{{ cart_total_itens }}</span>
-                    </button>
-
-                  </a>
-                </li>
-              {% else %}
-                <li><button class="cart-btn" id="cart-btn"><a href="{% url 'cart' %}">🛒</a></button></li>
-              {% endif %}
-              
-            {% endif %}
-            <div>
-              <li><strong>Olá, {{ user.username }}</strong></li>
+            {% if cart_total_itens > 0 %}
               <li>
+                <a href="{% url 'cart' %}">
+                  <button class="cart-btn" id="cart-btn">
+                    🛒<span class="cart-count" id="cart-count">{{ cart_total_itens }}</span>
+                  </button>
+
+                </a>
+              </li>
+            {% else %}
+              <li><button class="cart-btn" id="cart-btn"><a href="{% url 'cart' %}">🛒</a></button></li>
+            {% endif %}
+
+            <div class="user-menu">
+              <div class="user-name" id="user-name">
+                👤 Olá, {{ user.first_name }} {{user.last_name }} ▼
+              </div>
+
+              <div class="user-dropdown" id="user-dropdown">
+                <a href="{% url 'my_account' %}">Minha Conta</a>
+                <a href="pedidos.html">Meus Pedidos</a>
+                <a href="pedidos.html">Meus Endereços</a>
                 <form method="post" action="{% url 'logout' %}">
                   {% csrf_token %}
-                  <button class=logout_button type="submit">Sair</button>
-                </form>   
-              </li>
+                  <button id="logout-btn" type="submit">Sair</button>
+                </form>
+              </div>
             </div>
           {% else %}
             <li><a href="{% url 'login' %}">Login</a></li>
             <li><a href="{% url 'register' %}">Cadastrar</a></li>
           {% endif %}
-
-          
         </ul>
       </nav>
     </header>
 
       {% block content %}
+        
       {% endblock content %}
 
     <footer>
@@ -173,6 +232,29 @@
   </div>
 
   {% block script_content %}
+    <script>
+      const userNameBtn = document.getElementById('user-name');
+      const userDropdown = document.getElementById('user-dropdown');
+
+      // Alternar menu
+      userNameBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        userDropdown.style.display =
+          userDropdown.style.display === "flex" ? "none" : "flex";
+      });
+
+      // Fechar quando clicar fora
+      document.addEventListener("click", () => {
+        userDropdown.style.display = "none";
+      });
+
+      // Botão de logout
+      document.getElementById("logout-btn").addEventListener("click", () => {
+        alert("Você saiu da conta.");
+        // Aqui você poderia limpar o localStorage/cookies
+        window.location.href = "login.html";
+            });
+      </script>
   {% endblock script_content %}
 </body>
 </html>
