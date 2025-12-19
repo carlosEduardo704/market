@@ -206,8 +206,7 @@
 
               <div class="user-dropdown" id="user-dropdown">
                 <a href="{% url 'my_account' %}">Minha Conta</a>
-                <a href="pedidos.html">Meus Pedidos</a>
-                <a href="pedidos.html">Meus Endereços</a>
+                <a href="{% url 'orders' %}">Meus Pedidos</a>
                 <form method="post" action="{% url 'logout' %}">
                   {% csrf_token %}
                   <button id="logout-btn" type="submit">Sair</button>
