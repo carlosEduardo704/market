@@ -32,25 +32,11 @@
         font-size: 15px;
     }
 
-    .menu-item:hover,
-    .menu-item.active {
-        background: #4CAF50;
-        color: white;
-    }
-
     /* Conteúdo */
     .content {
         margin-left: 260px;
         padding: 40px;
         width: calc(100% - 260px);
-    }
-
-    .content-section {
-        display: none;
-    }
-
-    .content-section.active {
-        display: block;
     }
 
     h1 {
@@ -88,67 +74,40 @@
         margin-bottom: 12px;
         border: 1px solid #eee;
     }
+
+    .links_myArea {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    #button_logout {
+      background: none;
+      color: inherit;
+      border: none;
+      padding: 0;
+      font: inherit;
+      cursor: pointer;
+      outline: inherit;
+    }
   </style>
 
   <!-- MENU LATERAL -->
     <aside class="sidebar">
       <h2>Minha Área</h2>
 
-      <div class="menu-item active" onclick="showSection('conta')">Minha Conta</div>
-      <div class="menu-item" onclick="showSection('pedidos')">Meus Pedidos</div>
-      <div class="menu-item" onclick="showSection('enderecos')">Meus Endereços</div>
-      <div class="menu-item" onclick="logout()">Sair</div>
+      <a class="links_myArea" href="{% url 'my_account' %}"><div class="menu-item" id="myAccount">Minha Conta</div></a>
+      <a class="links_myArea" href="{% url 'orders' %}"><div class="menu-item" id="myOrders">Meus Pedidos</div></a>
+      <a class="links_myArea" href="{% url 'adress_detail' %}"><div class="menu-item" id="myAdresses">Meus Endereços</div></a>
+      <div class="menu-item" id="logout">
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit" id="button_logout">Sair</button>
+        </form>
+      </div>
     </aside>
 
-  <main class="content">
-
-        <!-- Minha Conta -->
-        <section id="conta" class="content-section active">
-            <h1>Informações da Conta</h1>
-            <div class="info-box">
-              <p><strong>Nome:</strong> {{user.first_name}} {{user.last_name}}</p>
-              <p><strong>Email:</strong> {{user.email}}</p>
-              <p><strong>Telefone:</strong> (11) 99999-9999</p>
-              <hr>
-              <button class="btn">
-                  Editar Informações
-              </button>
-            </div>
-        </section>
-
-        <!-- Meus Pedidos -->
-        <section id="pedidos" class="content-section">
-            <h1>Meus Pedidos</h1>
-            {% for order in orders %}
-            <a href="#" style="text-decoration: none; color: inherit;">
-              <div class="order-item">
-                <strong>Pedido #{{order.id}}</strong> — {{order.created_at}} <br>
-                Total: <span style="color:#4CAF50;">{{ order.total }}</span>
-              </div>
-            </a>
-            {% endfor %}
-
-        </section>
-
+    <main class="content">
+      {% block content_section %}
+      {% endblock content_section %}
     </main>
-    {% block script %}
-      <script>
-        function showSection(id) {
-          // esconder todas
-          document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
-          document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
-
-          // mostrar a escolhida
-          document.getElementById(id).classList.add('active');
-
-          // ativar menu
-          event.target.classList.add('active');
-        }
-
-        function logout() {
-            alert("Você saiu da conta.");
-            window.location.href = "login.html";
-        }
-      </script>
-    {% endblock script %}
 {% endblock content %}
