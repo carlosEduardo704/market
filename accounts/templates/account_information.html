@@ -1,0 +1,23 @@
+{% extends "my_account.html" %}
+
+{% block content_section %}
+  <style>
+    #myAccount {
+        background: #4CAF50;
+        color: white;
+    }
+  </style>
+  <!-- Minha Conta -->
+  <section class="content-section">
+    <h1>Informações da Conta</h1>
+    <div class="info-box">
+      <p><strong>Nome:</strong> {{user.first_name}} {{user.last_name}}</p>
+      <p><strong>Email:</strong> {{user.email}}</p>
+      <p><strong>Telefone:</strong> (11) 99999-9999</p>
+      <hr>
+      <button class="btn">
+          Editar Informações
+      </button>
+    </div>
+  </section>
+{% endblock content_section %}
