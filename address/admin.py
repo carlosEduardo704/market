@@ -1,7 +1,7 @@
 from django.contrib import admin
-from address.models import Adress
-from address.forms import AdressModelForm
+from address.models import Address
+from address.forms import AddressModelForm
 
 class AdressAdmin(admin.ModelAdmin):
-    form = AdressModelForm
+    form = AddressModelForm
     list_display = ("user", "address_name", "street", "city")
