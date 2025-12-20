@@ -5,7 +5,7 @@ from localflavor.br.models import BRStateField, BRPostalCodeField
 
 MAX_ADDRESSES_PER_USER = 3
 
-class Adress(models.Model):
+class Address(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_adress')
     adress_name = models.CharField(max_length=20)
     street = models.CharField(max_length=50)
