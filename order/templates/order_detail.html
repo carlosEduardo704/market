@@ -1,0 +1,138 @@
+{% extends "my_account.html" %}
+
+{% block content_section %}
+  <style>
+    #myOrders {
+        background: #4CAF50;
+        color: white;
+    }
+
+    /* Conteúdo */
+    h1 {
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0px 2px 6px rgba(0,0,0,0.06);
+      margin-bottom: 20px;
+      max-width: 900px;
+    }
+
+    .status {
+      font-weight: 700;
+      color: #4CAF50;
+      margin-top: 5px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .product {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .product:last-child {
+      border-bottom: none;
+    }
+
+    .total {
+      font-size: 18px;
+      font-weight: 700;
+      text-align: right;
+      margin-top: 15px;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+      background: #4CAF50;
+      color: #fff;
+      margin-top: 15px;
+    }
+
+    .btn.secondary {
+      background: #e5e7eb;
+      color: #333;
+      margin-left: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .content {
+        margin-left: 0;
+        width: 100%;
+      }
+      .sidebar {
+        display: none;
+      }
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <section class="content-section">
+    <main>
+      <h1>Detalhes do Pedido #{{order.id}}</h1>
+
+      <!-- STATUS -->
+      <div class="card">
+        <strong>Status do Pedido</strong>
+        <div class="status">✔ Finalizado</div>
+      </div>
+
+      <!-- INFORMAÇÕES -->
+      <div class="card info-grid">
+        <div>
+          <strong>Data do Pedido</strong>
+          <p>{{order.created_at}}</p>
+        </div>
+        <div>
+          <strong>Forma de Pagamento</strong>
+          <p>{{ order.get_payment_method_display }}</p>
+        </div>
+        <div>
+          <strong>Endereço de Entrega</strong>
+          <p>
+            Rua das Flores, 123<br>
+            Centro - São Paulo/SP<br>
+            CEP 01000-000
+          </p>
+        </div>
+        <div>
+          <strong>Cliente</strong>
+          <p>{{order.user.first_name}} {{order.user.last_name}}</p>
+        </div>
+      </div>
+
+      <!-- PRODUTOS -->
+      <div class="card">
+        <h2>Itens do Pedido</h2>
+        {% for item in items %}
+          <div class="product">
+            <span>{{item.product}} (x{{item.quantity}})</span>
+            <span>R$ {{item.product_price}}</span>
+          </div>
+        {% endfor %}
+
+        <div class="total">
+          Total: R$ {{order.total}}
+        </div>
+      </div>
+
+    </main>
+  </section>
+  
+{% endblock content_section %}
