@@ -1,11 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.shortcuts import redirect
+from accounts.mixins import RestrictUserMixin
 # Django-Views
 from django.views.generic.edit import FormView
+from django.views.generic import TemplateView, DetailView
 # Models
 from cart.models import Cart
-from order.models import OrderItem
+from order.models import Order, OrderItem
 # Forms
 from order.forms import OrderModelForm
 # Create your views here.
@@ -68,5 +70,31 @@ class CheckoutFormView(LoginRequiredMixin, FormView):
         
         # Adiciona o objeto carrinho para que o template possa listar os itens
         context['cart'] = self.get_cart()
+        
+        return context
+
+
+class OrdersView(LoginRequiredMixin, TemplateView):
+    model = Order
+    template_name = 'orders.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        orders = [order for order in Order.objects.filter(user=self.request.user)]
+        context['orders'] = orders
+
+        return context
+
+
+class OrderDetailView(RestrictUserMixin, LoginRequiredMixin, DetailView):
+    model = Order
+    template_name = 'order_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        order_itens = [item for item in OrderItem.objects.filter(order=self.kwargs['pk'])]
+        context['items'] = order_itens
         
         return context
