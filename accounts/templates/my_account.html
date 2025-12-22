@@ -97,7 +97,7 @@
 
       <a class="links_myArea" href="{% url 'my_account' %}"><div class="menu-item" id="myAccount">Minha Conta</div></a>
       <a class="links_myArea" href="{% url 'orders' %}"><div class="menu-item" id="myOrders">Meus Pedidos</div></a>
-      <a class="links_myArea" href="{% url 'adress_detail' %}"><div class="menu-item" id="myAdresses">Meus Endereços</div></a>
+      <a class="links_myArea" href="{% url 'adress_list' %}"><div class="menu-item" id="myAdresses">Meus Endereços</div></a>
       <div class="menu-item" id="logout">
         <form method="post" action="{% url 'logout' %}">
           {% csrf_token %}
