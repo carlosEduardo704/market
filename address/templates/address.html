@@ -1,5 +1,78 @@
 {% extends "my_account.html" %}
 
 {% block content_section %}
-  
+  <style>
+    #myAdresses {
+        background: #4CAF50;
+        color: white;
+    }
+
+    #address_form {
+      display: none;
+    }
+
+    .errorlist {
+      color: red;
+    }
+
+  </style>
+  <!-- Minha Conta -->
+  <section id="adress" class="content-section">
+    <h1>Meus Endereços</h1>
+      {% if addresses %}
+        {% for address in addresses %}
+          <p>{{address}}</p>
+        {% endfor %}
+        <button id="btn-add_address">Adicionar endereço</button>
+        <form method="post" id="address_form">
+          {% csrf_token %}
+          {% if form.non_fields_errors %}
+            <div class="alert-danger">
+              {{ form.non_fields_errors }}
+            </div>
+          {% endif %}
+          {{ form.as_p}}
+          <button type="submit">Cadastrar</button>
+        </form>
+      {% else %}
+        <p id="message">Nenhum endereço cadastrado!</p>
+        <button id="btn-add_address">Adicionar endereço</button>
+        <form method="post" id="address_form">
+          {% csrf_token %}
+          <label for="name">Nome do Endereço</label>
+          {{form.adress_name}}
+          <label for="street">Rua</label>
+          {{form.street}}
+          <label for="number">Numero</label>
+          {{form.number}}
+          <label for="zip_code">CEP</label>
+          {{form.zip_code}}
+          <label for="city">Cidade</label>
+          {{form.city}}
+          <label for="district">Municipio</label>
+          {{form.district}}
+          <label for="uf">Estado</label>
+          {{form.uf}}
+          <button type="submit">Cadastrar</button>
+        </form>
+      {% endif %}
+  </section>
+
+  <script>
+    btn = document.getElementById('btn-add_address');
+    form = document.getElementById('address_form');
+    message = document.getElementById('message');
+
+    btn.addEventListener('click', () => {
+      if(form.style.display === 'none') {
+        form.style.display = 'block'
+        btn.style.display = 'none'
+        message.style.display = 'none'
+      } else {
+        form.style.display = 'none'
+        btn.style.display = 'block'
+        message.style.display = 'block'
+      }
+    });
+  </script>
 {% endblock content_section %}
