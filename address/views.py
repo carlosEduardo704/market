@@ -1,4 +1,5 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from address.models import Address
 from address.forms import AddressModelForm
 from django.urls import reverse_lazy
@@ -28,4 +29,13 @@ class AddressListView(CreateView):
         context['addresses'] = addresses
         
         return context
+
+
+class RemoveAddressDeleteView(LoginRequiredMixin, DeleteView):
+    model = Address
+    template_name = 'address.html'
+    success_url = reverse_lazy('adress_list')
     
+    # Restringe o queryset para que o usuário não possa deletar o endereço de outro usuário.
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
