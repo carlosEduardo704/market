@@ -14,52 +14,58 @@
     .errorlist {
       color: red;
     }
+    
+    .btn.danger {
+      background: #ef4444;
+      color: #fff;
+      margin-left: 6px;
+    }
 
   </style>
-  <!-- Minha Conta -->
   <section id="adress" class="content-section">
     <h1>Meus Endereços</h1>
-      {% if addresses %}
-        {% for address in addresses %}
-          <p>{{address}}</p>
-        {% endfor %}
-        <button id="btn-add_address">Adicionar endereço</button>
-        <form method="post" id="address_form">
-          {% csrf_token %}
-          {% if form.non_fields_errors %}
-            <div class="alert-danger">
-              {{ form.non_fields_errors }}
-            </div>
-          {% endif %}
-          {{ form.as_p}}
-          <button type="submit">Cadastrar</button>
-        </form>
-      {% else %}
-        <p id="message">Nenhum endereço cadastrado!</p>
-        <button id="btn-add_address">Adicionar endereço</button>
-        <form method="post" id="address_form">
-          {% csrf_token %}
-          <label for="name">Nome do Endereço</label>
-          {{form.adress_name}}
-          <label for="street">Rua</label>
-          {{form.street}}
-          <label for="number">Numero</label>
-          {{form.number}}
-          <label for="zip_code">CEP</label>
-          {{form.zip_code}}
-          <label for="city">Cidade</label>
-          {{form.city}}
-          <label for="district">Municipio</label>
-          {{form.district}}
-          <label for="uf">Estado</label>
-          {{form.uf}}
-          <button type="submit">Cadastrar</button>
-        </form>
-      {% endif %}
+    {% if addresses %}
+      <form method="post" id="address_form">
+        {% csrf_token %}
+        {% if form.non_fields_errors %}
+          <div class="alert-danger">
+            {{ form.non_fields_errors }}
+          </div>
+        {% endif %}
+        {{ form.as_p}}
+        <button type="submit">Cadastrar</button>
+      </form>
+
+      {% for address in addresses %}
+        <div class="card" style="margin: 10px;">
+          <strong>{{address.adress_name}}</strong>
+          <p>
+            {{address.street}}, {{address.number}}<br>
+            Bairro: {{address.district}}<br>
+            {{address.city}} - {{address.uf}}<br>
+            CEP: {{address.zip_code}}
+          </p>
+          <div style="margin-top: 15px; display: flex;">
+            <button class="btn secondary">Editar</button>
+            <form action="{% url 'delete_address' address.pk %}" method="post">
+              {% csrf_token %}
+              <button class="btn danger" type="submit" onclick="return confirm('Tem certeza que deseja deletar o endereço?')">
+                Exluir
+              </button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      
+    {% endif %}
+    <button id="btn" class="btn" style="margin-top: 10px;">
+        + Adicionar novo endereço
+    </button>
   </section>
 
   <script>
-    btn = document.getElementById('btn-add_address');
+    btn = document.getElementById('btn');
     form = document.getElementById('address_form');
     message = document.getElementById('message');
 
