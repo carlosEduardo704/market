@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.shortcuts import redirect
-from accounts.mixins import RestrictUserMixin
+from order.mixins import RestrictUserMixin
 # Django-Views
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView, DetailView
