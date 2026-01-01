@@ -1,0 +1,31 @@
+{% extends "my_account.html" %}
+
+{% block content_section %}
+  <style>
+      #myAdresses {
+          background: #4CAF50;
+          color: white;
+      }
+
+      .errorlist {
+        color: red;
+      }
+      
+      .btn.danger {
+        background: #ef4444;
+        color: #fff;
+        margin-left: 6px;
+      }
+
+  </style>
+  <form method="post" id="address_form">
+    {% csrf_token %}
+      {% if form.non_fields_errors %}
+        <div class="alert-danger">
+        {{ form.non_fields_errors }}
+        </div>
+      {% endif %}
+      {{ form.as_p}}
+      <button type="submit">Cadastrar</button>
+    </form>
+{% endblock content_section %}
