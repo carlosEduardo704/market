@@ -7,14 +7,6 @@
         color: white;
     }
 
-    #address_form {
-      display: none;
-    }
-
-    .errorlist {
-      color: red;
-    }
-    
     .btn.danger {
       background: #ef4444;
       color: #fff;
@@ -25,17 +17,6 @@
   <section id="adress" class="content-section">
     <h1>Meus Endereços</h1>
     {% if addresses %}
-      <form method="post" id="address_form">
-        {% csrf_token %}
-        {% if form.non_fields_errors %}
-          <div class="alert-danger">
-            {{ form.non_fields_errors }}
-          </div>
-        {% endif %}
-        {{ form.as_p}}
-        <button type="submit">Cadastrar</button>
-      </form>
-
       {% for address in addresses %}
         <div class="card" style="margin: 10px;">
           <strong>{{address.adress_name}}</strong>
@@ -46,7 +27,7 @@
             CEP: {{address.zip_code}}
           </p>
           <div style="margin-top: 15px; display: flex;">
-            <button class="btn secondary">Editar</button>
+            <a href="{% url 'update_address' address.pk %}"><button class="btn secondary">Editar</button></a>
             <form action="{% url 'delete_address' address.pk %}" method="post">
               {% csrf_token %}
               <button class="btn danger" type="submit" onclick="return confirm('Tem certeza que deseja deletar o endereço?')">
@@ -59,12 +40,12 @@
     {% else %}
       
     {% endif %}
-    <button id="btn" class="btn" style="margin-top: 10px;">
-        + Adicionar novo endereço
-    </button>
+    <a href="{% url 'create_address' %}">
+      <button id="btn" class="btn" style="margin-top: 10px;">+ Adicionar novo endereço</button>
+    </a>
   </section>
 
-  <script>
+  <!-- <script>
     btn = document.getElementById('btn');
     form = document.getElementById('address_form');
     message = document.getElementById('message');
@@ -80,5 +61,5 @@
         message.style.display = 'block'
       }
     });
-  </script>
+  </script> -->
 {% endblock content_section %}
