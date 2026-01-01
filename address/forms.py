@@ -15,7 +15,7 @@ class AddressModelForm(forms.ModelForm):
             'number': 'Número',
             'zip_code': 'CEP',
             'city': 'Cidade',
-            'district': 'Municipio',
+            'district': 'Bairro',
             'uf': 'Estado'
         }
 
@@ -45,7 +45,3 @@ class AddressModelForm(forms.ModelForm):
             if Address.objects.filter(user=user).count() >= MAX_ADDRESSES_PER_USER:
                 raise forms.ValidationError(f"Usuário não pode ter mais de {MAX_ADDRESSES_PER_USER} endereços cadastrados!")
         return user
-    
-    error_messages = {
-
-    }
