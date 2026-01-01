@@ -45,7 +45,55 @@ class ProductTest(TestCase):
             'bar_code': '123456789',
             'price': 11.99,
             'department': department.pk
-        })
+        }, follow=True)
         
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(Product.objects.count(), 1)
+
+
+    def test_normal_user_cannot_edit_a_product(self):
+        
+        self.client.login(username='user2', password='123456')
+
+        department = Department.objects.create(name='TESTE')
+        product = Product.objects.create(
+            name='Teste',
+            bar_code='123456789',
+            price=10,
+            department=department
+        )
+
+        url = reverse('product_update', kwargs={'pk': product.pk})
+
+        response = self.client.post(url, {
+            'name': 'Teste2',
+            'bar_code': '000000000',
+            'price': 10.99,
+            'department': department.pk
+        })
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_superuser_can_edit_a_product(self):
+        
+        self.client.login(username='user1', password='123456')
+
+
+        department = Department.objects.create(name='TESTE')
+        product = Product.objects.create(
+            name='Teste',
+            bar_code='123456789',
+            price=10,
+            department=department
+        )
+
+        url = reverse('product_update', kwargs={'pk': product.pk})
+
+        response = self.client.post(url, {
+            'name': 'Modificado',
+            'bar_code': '000000000',
+            'price': 10.99,
+            'department': department.pk
+        }, follow=True)
+
+        self.assertEqual(response.status_code, 200)
