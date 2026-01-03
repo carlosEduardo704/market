@@ -106,9 +106,9 @@
         <div>
           <strong>Endereço de Entrega</strong>
           <p>
-            Rua das Flores, 123<br>
-            Centro - São Paulo/SP<br>
-            CEP 01000-000
+            Rua: {{order.shipping_street}}, {{order.shipping_number}}<br>
+            Bairro: {{ order.shipping_quartier }} - {{ order.shipping_city}}/{{ order.shipping_uf}}<br>
+            CEP: {{ order.shipping_zip_code}}
           </p>
         </div>
         <div>
