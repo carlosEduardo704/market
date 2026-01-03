@@ -11,6 +11,12 @@ class Order(models.Model):
         ('DEBIT_CARD', 'Cartão de Débito')
     ]
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    shipping_street = models.CharField(max_length=50)
+    shipping_number = models.CharField(max_length=6)
+    shipping_zip_code = models.CharField(max_length=9)
+    shipping_city = models.CharField(max_length=29)
+    shipping_quartier = models.CharField(max_length=29)
+    shipping_uf = models.CharField(max_length=2)
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS, default='TICKET')
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     created_at = models.DateTimeField(auto_now_add=True)
