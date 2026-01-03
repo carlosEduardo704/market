@@ -2,21 +2,31 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.shortcuts import redirect
 from order.mixins import RestrictUserMixin
+from django.urls import reverse_lazy
 # Django-Views
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView, DetailView
 # Models
 from cart.models import Cart
 from order.models import Order, OrderItem
+from address.models import Address
 # Forms
 from order.forms import OrderModelForm
+from address.forms import AddressModelForm
 # Create your views here.
 
 
 class CheckoutFormView(LoginRequiredMixin, FormView):
     template_name = 'checkout.html'
     form_class = OrderModelForm
-    success_url = '/'
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+        
+    def get_success_url(self):
+        return reverse_lazy('order_detail', kwargs={'pk': self.objects.pk})
 
     def get_cart(self):
         if self.request.user.is_authenticated:
@@ -35,6 +45,14 @@ class CheckoutFormView(LoginRequiredMixin, FormView):
             return redirect('/')
 
         with transaction.atomic():
+            address = form.cleaned_data["address"]
+
+            form.instance.user = self.request.user
+            form.instance.shipping_street = address.street
+            form.instance.shipping_number = address.number
+            form.instance.shipping_zip_code = address.zip_code
+            form.instance.shipping_city = address.city
+            form.instance.shipping_uf = address.uf
 
             new_order = form.save(commit=False)
             new_order.save()
@@ -63,13 +81,14 @@ class CheckoutFormView(LoginRequiredMixin, FormView):
 
             return redirect('/')
 
-        return super().form_invalid(form)
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
         # Adiciona o objeto carrinho para que o template possa listar os itens
         context['cart'] = self.get_cart()
+        context['addresses'] = Address.objects.filter(user=self.request.user)
         
         return context
 
