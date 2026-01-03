@@ -39,6 +39,9 @@
     }
 
     .order-address {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       background: #fff;
       padding: 32px;
       height: 60vh;
@@ -122,12 +125,9 @@
       padding-top: 12px;
       font-weight: 700;
       display: flex;
-      justify-content: space-between;
+      flex-direction: row;
+      justify-content: space-around;
       font-size: 18px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      background: #fff;
-      padding: 24px 32px;
     }
     
     .confirm-btn {
@@ -140,113 +140,147 @@
       font-size: 16px;
       cursor: pointer;
       transition: opacity 0.2s ease;
+      max-width: 30%;
     }
 
     .confirm-btn:hover {
       opacity: 0.9;
     }
     
+    .address-option {
+    display: flex;
+    align-items: start;
+    gap: 12px;
+
+    padding: 12px;
+    margin-bottom: 10px;
+
+    cursor: pointer;
+    }
+
+    .address-option:hover {
+        background-color: #f9f9f9;
+    }
+
+    .address-option input[type="radio"] {
+        transform: scale(1.2);
+    }
+
+    .address-info {
+        line-height: 1.4;
+    }
+
+
   </style>
   <main>
     <h1>Finalizar Compra</h1>
 
     <div class="main-div">
-      {% if cart and cart.itens.exists %}
-      <!-- FORMULÁRIO DE ENDEREÇO -->
-      <div class="order-address">
-        <form id="checkout-form">
-          {% csrf_token %}
-
-          <h2>Endereço de Entrega</h2>
-          <label for="nome">Nome Completo</label>
-          <input type="text" id="nome" required>
-
-          <label for="cep">CEP</label>
-          <input type="text" id="cep" placeholder="00000-000" required>
-
-          <label for="endereco">Endereço</label>
-          <input type="text" id="endereco" required>
-          
-          <label for="cidade">Cidade</label>
-          <input type="text" id="cidade" required>
-
-          <label for="estado">Estado</label>
-          <input type="text" id="estado" required>
-        </form>
-      </div>
-      <!-- RESUMO DO PEDIDO -->
-      <div class="order-summary">
-        <h2>Resumo do Pedido</h2>
-        <div id="order-items">
-          <table id="cart-table" class="table_itens" style="width: 100%;">
-            <thead>
-              <tr>
-                <th>Produto</th>
-                <th>Preço</th>
-                <th>Quantidade</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody id="cart-body" >
-              {% for item in cart.itens.all %}
-                <tr>
-                  <td>
-                    <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-around">
-                      <div>
-                        <img src="{{item.product.photo.url}}" alt="{{item.name}}">
-                      </div>
-                      <div style="width: 50%;">
-                        {{ item.product.name }}
-                      </div>
-                    </div>
-                  </td>
-                  <td>R$ {{ item.product.price|floatformat:2 }}</td>
-                  <td>
-                    <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
-                      <form action="{% url 'decrease_quantity' item.pk %}" method="post">
-                        {% csrf_token %}
-                        {% if item.quantity > 1 %}
-                        <button type="submit"><strong>-</strong></button>
-                        {% else %}
-                        <button type="submit" onclick="return confirm('Tem certeza que deseja remover este item do carrinho?')">
-                          <strong>-</strong>
-                        </button>
+      {% if cart and cart.itens.exists %}   <!-- Caso exista um carrinho com itens  -->
+        <!-- FORMULÁRIO DE ENDEREÇO -->
+        {% if addresses %}
+          <form method="post" >
+            {% csrf_token %}
+            <div class="order-address">
+              <div>
+                <h2>Endereço de Entrega</h2>
   
-                        {% endif %}
-                      </form>
-                      {{ item.quantity }}
-                      <form action="{% url 'add_to_cart' item.product.pk %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit"><strong>+</strong></button>
-                      </form>
+                  {% for radio in form.address %}
+                    <label class="address-option">
+                        <span class="radio">
+                            {{ radio.tag }}
+                        </span>
   
-                    </div>
-                  </td>
-                  <td>R$ {{ item.get_subtotal|floatformat:2 }}</td>
-                </tr>
-                  {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                        <span class="address-info">
+                            <strong>{{ radio.choice_label }}</strong>
+                        </span>
+                    </label>
+                    {% endfor %}
+    
+                    {% if form.address.errors %}
+                        <div class="error">{{ form.address.errors }}</div>
+                    {% endif %}
+              </div>
+              <div>
 
-    </div>
+                <div class="order-total">
+                  <div style="justify-content: space-between;">
+                    <h2>Forma de Pagamento</h2>
+                    {{ form.payment_method }}
+                  </div>
+                  <div style="display: flex; justify-content: center; font-size: 30px; color: green;">
+                    <span>Total:</span>
+                    <span id="order-total">R$ {{ cart.get_total|floatformat:2 }}</span>
+                  </div>
+                </div>
+                <div style="width: 100%; display: flex; justify-content: center;">
+                  <button type="submit" class="confirm-btn">Confirmar Compra</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        {% else %} <!-- Caso não exista endereços -->
 
-    <div class="order-total" style="justify-content: space-around;">
-      <form method="post">
-        {% csrf_token %}
-        <h2>Forma de Pagamento</h2>
-        {{ form.payment_method }}
-        <button type="submit" class="confirm-btn">Confirmar Compra</button>
-      </form>
-      <div style="display: flex; justify-content: center; font-size: 30px; color: green;">
-        <span>Total:</span>
-        <span id="order-total">R$ {{ cart.get_total|floatformat:2 }}</span>
+        {% endif %}
+          <!-- RESUMO DO PEDIDO -->
+          <div class="order-summary">
+            <h2>Resumo do Pedido</h2>
+            <div id="order-items">
+              <table id="cart-table" class="table_itens" style="width: 100%;">
+                <thead>
+                  <tr>
+                    <th>Produto</th>
+                    <th>Preço</th>
+                    <th>Quantidade</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody id="cart-body" >
+                  {% for item in cart.itens.all %}
+                    <tr>
+                      <td>
+                        <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-around">
+                          <div>
+                            <img src="{{item.product.photo.url}}" alt="{{item.name}}">
+                          </div>
+                          <div style="width: 50%;">
+                            {{ item.product.name }}
+                          </div>
+                        </div>
+                      </td>
+                      <td>R$ {{ item.product.price|floatformat:2 }}</td>
+                      <td>
+                        <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
+                          <form action="{% url 'decrease_quantity' item.pk %}" method="post">
+                            {% csrf_token %}
+                            {% if item.quantity > 1 %}
+                            <button type="submit"><strong>-</strong></button>
+                            {% else %}
+                            <button type="submit" onclick="return confirm('Tem certeza que deseja remover este item do carrinho?')">
+                              <strong>-</strong>
+                            </button>
+      
+                            {% endif %}
+                          </form>
+                          {{ item.quantity }}
+                          <form action="{% url 'add_to_cart' item.product.pk %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit"><strong>+</strong></button>
+                          </form>
+      
+                        </div>
+                      </td>
+                      <td>R$ {{ item.get_subtotal|floatformat:2 }}</td>
+                    </tr>
+                      {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
       </div>
-    </div>
-      
-      
-    {% else %}
+     
+    {% else %} <!-- Caso não exista um carrinho ou itens  -->
 
       <div id="summary-items" class="order-summary">
         <h2>Resumo do Pedido</h2>
