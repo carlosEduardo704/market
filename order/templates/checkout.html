@@ -29,8 +29,9 @@
     
     .order-summary {
       background: #fff;
-      padding: 32px;
-      height: 60vh;
+      padding-top: 5px;
+      padding-left: 32px;
+      height: 85%;
       overflow-y: auto;
       margin-bottom: 12px;
       padding-right: 8px;
@@ -43,8 +44,9 @@
       flex-direction: column;
       justify-content: space-between;
       background: #fff;
-      padding: 32px;
-      height: 60vh;
+      padding-top: 5px;
+      padding-left: 32px;
+      height: 85%;
       margin-bottom: 12px;
       padding-right: 8px;
       border-radius: var(--radius);
@@ -127,7 +129,7 @@
       display: flex;
       flex-direction: row;
       justify-content: space-around;
-      font-size: 18px;
+      height: 20%;
     }
     
     .confirm-btn {
@@ -148,14 +150,34 @@
     }
     
     .address-option {
-    display: flex;
-    align-items: start;
-    gap: 12px;
+      height: 15%;
+      display: flex;
+      align-content: center;
+      align-items: center;
+      gap: 12px;
 
-    padding: 12px;
-    margin-bottom: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
 
-    cursor: pointer;
+      cursor: pointer;
+    }
+
+    .btn-edit {
+      padding: 10px 20px;
+      background: rgb(64, 132, 222);
+      color:#fff;
+      border:none;
+      border-radius:6px;
+      text-decoration: none;
+    }
+    
+    #add_address_url {
+      padding: 5px 10px;
+      background: green;
+      color:#fff;
+      border:none;
+      border-radius:6px;
+      text-decoration: none;
     }
 
     .address-option:hover {
@@ -179,42 +201,53 @@
       {% if cart and cart.itens.exists %}   <!-- Caso exista um carrinho com itens  -->
         <!-- FORMULÁRIO DE ENDEREÇO -->
         {% if addresses %}
-          <form method="post" >
+          <form method="post">
             {% csrf_token %}
             <div class="order-address">
               <div>
                 <h2>Endereço de Entrega</h2>
-  
-                  {% for radio in form.address %}
+                {% for address in form_addresses %}
                     <label class="address-option">
-                        <span class="radio">
-                            {{ radio.tag }}
-                        </span>
-  
-                        <span class="address-info">
-                            <strong>{{ radio.choice_label }}</strong>
-                        </span>
-                    </label>
-                    {% endfor %}
-    
-                    {% if form.address.errors %}
-                        <div class="error">{{ form.address.errors }}</div>
-                    {% endif %}
-              </div>
-              <div>
+                        <input
+                            type="radio"
+                            name="address"
+                            value="{{ address.id }}"
+                            {% if form.address.value|stringformat:"s" == address.id|stringformat:"s" %}
+                                checked
+                            {% endif %}
+                            style="width: 5%;"
+                        >
 
-                <div class="order-total">
-                  <div style="justify-content: space-between;">
-                    <h2>Forma de Pagamento</h2>
-                    {{ form.payment_method }}
-                  </div>
-                  <div style="display: flex; justify-content: center; font-size: 30px; color: green;">
-                    <span>Total:</span>
-                    <span id="order-total">R$ {{ cart.get_total|floatformat:2 }}</span>
-                  </div>
+                        <div class="address-info">
+                            <strong>{{ address.street }}, {{ address.number }}</strong><br>
+                            Bairro:{{ address.district }} - {{ address.city }} - {{ address.uf }}<br>
+                            CEP: {{ address.zip_code }}
+                            <div id="edit_address_btn" style="margin-top: 10px;">
+                              <a class="btn-edit" href="{% url 'update_address' address.pk %}?next={{ request.path }}">Editar</a>
+                            </div>
+                        </div>
+                        
+                    </label>
+                {% endfor %}
+                <div>
+
+                  <a id="add_address_url" href="{% url 'create_address' %}?next={{ request.path }}">Adicionar Endereço</a>
                 </div>
-                <div style="width: 100%; display: flex; justify-content: center;">
-                  <button type="submit" class="confirm-btn">Confirmar Compra</button>
+                
+                <div  style="display: flex; flex-direction: column; height: 80%;">
+                  <div class="order-total">
+
+                    <div style="justify-content: space-between;">
+                      <h2>Forma de Pagamento</h2>
+                      {{ form.payment_method }}
+                    </div>
+                    <div style="display: flex; justify-content: center; font-size: 30px; color: green;">
+                      <span>Total: R$ {{ cart.get_total|floatformat:2 }}</span>
+                    </div>
+                  </div>
+                  <div style="height: 10%; display: flex; justify-content: center;">
+                    <button type="submit" class="confirm-btn">Confirmar Compra</button>
+                  </div>
                 </div>
               </div>
             </div>
