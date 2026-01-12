@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from address.models import Address
 from address.forms import AddressModelForm
 from django.urls import reverse_lazy
+from django.utils.http import url_has_allowed_host_and_scheme
 
 
 class AddressListView(ListView):
@@ -22,7 +23,7 @@ class CreateAdressView(CreateView):
     model = Address
     template_name = 'create_address.html'
     form_class = AddressModelForm
-    success_url = reverse_lazy('adress_list')
+    success_url = reverse_lazy('home_page')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -32,6 +33,14 @@ class CreateAdressView(CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+    def get_success_url(self):
+        next_url = self.request.POST.get('next') or self.request.GET.get('next')
+
+        if next_url and url_has_allowed_host_and_scheme(url=next_url, allowed_hosts={self.request.get_host()}):
+            return next_url
+
+        return super().get_success_url()
 
 
 class UpdateAddressView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
