@@ -52,6 +52,7 @@ class CheckoutFormView(LoginRequiredMixin, FormView):
             form.instance.shipping_number = address.number
             form.instance.shipping_zip_code = address.zip_code
             form.instance.shipping_city = address.city
+            form.instance.shipping_quartier = address.district
             form.instance.shipping_uf = address.uf
 
             new_order = form.save(commit=False)
@@ -86,9 +87,14 @@ class CheckoutFormView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        # Adiciona o objeto carrinho para que o template possa listar os itens
+        # Adiciona o objeto carrinho para que o template possa listar os itens.
         context['cart'] = self.get_cart()
+        # context com endereços do usuário.
         context['addresses'] = Address.objects.filter(user=self.request.user)
+        # context de endereços do usuário para serem usados no form de conclusão de venda.
+        context['form_addresses'] = self.form_class(
+            user=self.request.user
+        ).fields["address"].queryset
         
         return context
 
