@@ -13,6 +13,14 @@
       margin-left: 6px;
     }
 
+    .btn-edit {
+      padding:10px 20px;
+      background: rgb(64, 132, 222);
+      color:#fff;
+      border:none;
+      border-radius:6px;
+    }
+    
   </style>
   <section id="adress" class="content-section">
     <h1>Meus Endereços</h1>
@@ -27,7 +35,7 @@
             CEP: {{address.zip_code}}
           </p>
           <div style="margin-top: 15px; display: flex;">
-            <a href="{% url 'update_address' address.pk %}"><button class="btn secondary">Editar</button></a>
+            <a href="{% url 'update_address' address.pk %}"><button class="btn-edit">Editar</button></a>
             <form action="{% url 'delete_address' address.pk %}" method="post">
               {% csrf_token %}
               <button class="btn danger" type="submit" onclick="return confirm('Tem certeza que deseja deletar o endereço?')">
@@ -40,7 +48,7 @@
     {% else %}
       
     {% endif %}
-    <a href="{% url 'create_address' %}">
+    <a href="{% url 'create_address' %}?next={{ request.path }}">
       <button id="btn" class="btn" style="margin-top: 10px;">+ Adicionar novo endereço</button>
     </a>
   </section>
