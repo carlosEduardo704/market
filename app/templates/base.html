@@ -230,30 +230,30 @@
     </footer>
   </div>
 
+  <script>
+    const userNameBtn = document.getElementById('user-name');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    // Alternar menu
+    userNameBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      userDropdown.style.display =
+        userDropdown.style.display === "flex" ? "none" : "flex";
+    });
+
+    // Fechar quando clicar fora
+    document.addEventListener("click", () => {
+      userDropdown.style.display = "none";
+    });
+
+    // Botão de logout
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      alert("Você saiu da conta.");
+      // Aqui você poderia limpar o localStorage/cookies
+      window.location.href = "login.html";
+          });
+  </script>
   {% block script_content %}
-    <script>
-      const userNameBtn = document.getElementById('user-name');
-      const userDropdown = document.getElementById('user-dropdown');
-
-      // Alternar menu
-      userNameBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        userDropdown.style.display =
-          userDropdown.style.display === "flex" ? "none" : "flex";
-      });
-
-      // Fechar quando clicar fora
-      document.addEventListener("click", () => {
-        userDropdown.style.display = "none";
-      });
-
-      // Botão de logout
-      document.getElementById("logout-btn").addEventListener("click", () => {
-        alert("Você saiu da conta.");
-        // Aqui você poderia limpar o localStorage/cookies
-        window.location.href = "login.html";
-            });
-      </script>
   {% endblock script_content %}
 </body>
 </html>
