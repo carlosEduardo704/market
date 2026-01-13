@@ -5,329 +5,311 @@
 {% endblock title_content %}
 
 {% block content %}
-  <style>
-    main {
-      max-width: 100%;
-      margin: 60px auto;
-      padding: 0 32px;
-      display: flex;
-      flex-direction: column;
-    }
+<style>
+  .checkout-container {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 24px;
+  }
 
-    .main-div {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-    }
-    h1 {
-      grid-column: 1 / -1;
-      text-align: center;
-      font-size: 32px;
-      margin-bottom: 20px;
-      font-weight: 700;
-    }
-    
-    .order-summary {
+  .checkout-left,
+  .checkout-right {
       background: #fff;
-      padding-top: 5px;
-      padding-left: 32px;
-      height: 85%;
+      padding: 20px;
+      border-radius: 8px;
+  }
+
+  .checkout-right {
+    display: flex;
+    flex-direction: column;
+    height: 80vh; /* controla a altura da coluna */
+  }
+
+  .order-items {
+      flex: 1;
       overflow-y: auto;
-      margin-bottom: 12px;
       padding-right: 8px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
+  }
 
-    .order-address {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+  .table_itens table {
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .table_itens th, td {
+    padding: 16px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .table_itens th {
+    background: #f3f4f6;
+    font-weight: 600;
+  }
+
+  .table_itens tr:last-child td {
+    border-bottom: none;
+  }
+
+  .table_itens img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+
+  /* botão fixo dentro da coluna */
+  .order-footer {
+      position: sticky;
+      bottom: 0;
       background: #fff;
-      padding-top: 5px;
-      padding-left: 32px;
-      height: 85%;
-      margin-bottom: 12px;
-      padding-right: 8px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-
-    h2 {
-      font-size: 20px;
-      margin-bottom: 16px;
-      font-weight: 600;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 500;
-      color: var(--muted);
-    }
-
-    input, select {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 16px;
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-      font-family: inherit;
-      font-size: 15px;
-    }
-
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(46, 139, 58, 0.2);
-    }
-
-    .table_itens table {
-      border-collapse: collapse;
-      background: #fff;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .table_itens th, td {
-      padding: 16px;
-      text-align: center;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .table_itens th {
-      background: #f3f4f6;
-      font-weight: 600;
-    }
-
-    .table_itens tr:last-child td {
-      border-bottom: none;
-    }
-
-    .table_itens img {
-      width: 60px;
-      height: 60px;
-      object-fit: contain;
-      border-radius: 8px;
-    }
-    .order-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .order-item span {
-      font-weight: 500;
-    }
-
-    .order-total {
-      align-items: center;
       padding-top: 12px;
-      font-weight: 700;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-around;
-      height: 20%;
-    }
-    
-    .confirm-btn {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 14px 22px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 16px;
-      cursor: pointer;
-      transition: opacity 0.2s ease;
-      max-width: 30%;
-    }
+      border-top: 1px solid #ddd;
+  }
 
-    .confirm-btn:hover {
-      opacity: 0.9;
-    }
-    
-    .address-option {
-      height: 15%;
-      display: flex;
-      align-content: center;
-      align-items: center;
-      gap: 12px;
-
+  .btn-confirm {
+      width: 100%;
+      background: #198754;
+      color: #fff;
       padding: 12px;
-      margin-bottom: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+  }
 
+
+  .address-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 12px;
       cursor: pointer;
-    }
+  }
 
-    .btn-edit {
-      padding: 10px 20px;
-      background: rgb(64, 132, 222);
-      color:#fff;
-      border:none;
-      border-radius:6px;
+  .address-card input {
+      margin-top: 4px;
+  }
+
+  .address-info {
+      flex: 1;
+  }
+
+  .btn-edit {
+      background: #0d6efd;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
       text-decoration: none;
-    }
-    
-    #add_address_url {
-      padding: 5px 10px;
-      background: green;
-      color:#fff;
-      border:none;
-      border-radius:6px;
+  }
+
+  .btn-add {
+      display: inline-block;
+      margin-top: 10px;
+      background: var(--accent);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 6px;
       text-decoration: none;
-    }
+  }
 
-    .address-option:hover {
-        background-color: #f9f9f9;
-    }
+  .payment-section {
+    margin-top: 24px;
+  }
 
-    .address-option input[type="radio"] {
-        transform: scale(1.2);
-    }
+  .payment-label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+  }
 
-    .address-info {
-        line-height: 1.4;
-    }
+  .custom-select {
+      position: relative;
+  }
+
+  .custom-select select {
+      width: 100%;
+      padding: 12px 40px 12px 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+  }
+
+  /* seta customizada */
+  .custom-select::after {
+      content: "▾";
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 14px;
+      color: #555;
+  }
+
+  /* foco */
+  .custom-select select:focus {
+      outline: none;
+      border-color: #198754;
+      box-shadow: 0 0 0 2px rgba(25, 135, 84, 0.2);
+  }
 
 
-  </style>
-  <main>
-    <h1>Finalizar Compra</h1>
+  .product-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+  }
 
-    <div class="main-div">
-      {% if cart and cart.itens.exists %}   <!-- Caso exista um carrinho com itens  -->
-        <!-- FORMULÁRIO DE ENDEREÇO -->
-        {% if addresses %}
-          <form method="post">
-            {% csrf_token %}
-            <div class="order-address">
-              <div>
-                <h2>Endereço de Entrega</h2>
-                {% for address in form_addresses %}
-                    <label class="address-option">
-                        <input
-                            type="radio"
-                            name="address"
-                            value="{{ address.id }}"
-                            {% if form.address.value|stringformat:"s" == address.id|stringformat:"s" %}
-                                checked
-                            {% endif %}
-                            style="width: 5%;"
-                        >
+  .total {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 12px;
+  }
 
-                        <div class="address-info">
-                            <strong>{{ address.street }}, {{ address.number }}</strong><br>
-                            Bairro:{{ address.district }} - {{ address.city }} - {{ address.uf }}<br>
-                            CEP: {{ address.zip_code }}
-                            <div id="edit_address_btn" style="margin-top: 10px;">
-                              <a class="btn-edit" href="{% url 'update_address' address.pk %}?next={{ request.path }}">Editar</a>
-                            </div>
-                        </div>
-                        
-                    </label>
-                {% endfor %}
-                <div>
+  .btn-confirm {
+      width: 100%;
+      margin-top: 20px;
+      background: var(--accent);
+      color: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+  }
+</style>
 
-                  <a id="add_address_url" href="{% url 'create_address' %}?next={{ request.path }}">Adicionar Endereço</a>
-                </div>
-                
-                <div  style="display: flex; flex-direction: column; height: 80%;">
-                  <div class="order-total">
+<form method="post">
+    {% csrf_token %}
 
-                    <div style="justify-content: space-between;">
-                      <h2>Forma de Pagamento</h2>
-                      {{ form.payment_method }}
+    <div class="checkout-container">
+
+        <!-- COLUNA ESQUERDA -->
+        <div class="checkout-left">
+
+            <h3>Endereço de Entrega</h3>
+
+            {% for address in addresses %}
+                <label class="address-card">
+                    <input
+                        type="radio"
+                        name="address"
+                        value="{{ address.id }}"
+                        {% if form.address.value|stringformat:"s" == address.id|stringformat:"s" %}
+                            checked
+                        {% endif %}
+                    >
+
+                    <div class="address-info">
+                        <strong>{{ address.street }}, {{ address.number }}</strong>
+                        <p>{{ address.district }} - {{ address.city }} - {{ address.uf }}</p>
+                        <p>CEP: {{ address.zip_code }}</p>
                     </div>
-                    <div style="display: flex; justify-content: center; font-size: 30px; color: green;">
-                      <span>Total: R$ {{ cart.get_total|floatformat:2 }}</span>
-                    </div>
-                  </div>
-                  <div style="height: 10%; display: flex; justify-content: center;">
-                    <button type="submit" class="confirm-btn">Confirmar Compra</button>
-                  </div>
+
+                    <a href="{% url 'update_address' address.id %}" class="btn-edit">
+                        Editar
+                    </a>
+                </label>
+            {% endfor %}
+
+            <a href="{% url 'create_address' %}" class="btn-add">
+                + Adicionar Endereço
+            </a>
+
+            <div class="payment-section">
+                <label for="id_payment_method" class="payment-label">
+                    Forma de Pagamento
+                </label>
+
+                <div class="custom-select">
+                    {{ form.payment_method }}
                 </div>
-              </div>
             </div>
-          </form>
-        {% else %} <!-- Caso não exista endereços -->
 
-        {% endif %}
-          <!-- RESUMO DO PEDIDO -->
-          <div class="order-summary">
-            <h2>Resumo do Pedido</h2>
-            <div id="order-items">
-              <table id="cart-table" class="table_itens" style="width: 100%;">
-                <thead>
-                  <tr>
-                    <th>Produto</th>
-                    <th>Preço</th>
-                    <th>Quantidade</th>
-                    <th>Total</th>
-                  </tr>
-                </thead>
-                <tbody id="cart-body" >
-                  {% for item in cart.itens.all %}
+
+        </div>
+
+        <!-- COLUNA DIREITA -->
+        <div class="checkout-right">
+
+            <h3>Resumo do Pedido</h3>
+
+            <div class="order-items">
+                <table id="cart-table" class="table_itens" style="width: 100%;">
+                  <thead>
                     <tr>
-                      <td>
-                        <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-around">
-                          <div>
-                            <img src="{{item.product.photo.url}}" alt="{{item.name}}">
-                          </div>
-                          <div style="width: 50%;">
-                            {{ item.product.name }}
-                          </div>
-                        </div>
-                      </td>
-                      <td>R$ {{ item.product.price|floatformat:2 }}</td>
-                      <td>
-                        <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
-                          <form action="{% url 'decrease_quantity' item.pk %}" method="post">
-                            {% csrf_token %}
-                            {% if item.quantity > 1 %}
-                            <button type="submit"><strong>-</strong></button>
-                            {% else %}
-                            <button type="submit" onclick="return confirm('Tem certeza que deseja remover este item do carrinho?')">
-                              <strong>-</strong>
-                            </button>
-      
-                            {% endif %}
-                          </form>
-                          {{ item.quantity }}
-                          <form action="{% url 'add_to_cart' item.product.pk %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit"><strong>+</strong></button>
-                          </form>
-      
-                        </div>
-                      </td>
-                      <td>R$ {{ item.get_subtotal|floatformat:2 }}</td>
+                      <th>Produto</th>
+                      <th>Preço</th>
+                      <th>Quantidade</th>
+                      <th>Total</th>
                     </tr>
-                      {% endfor %}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody id="cart-body" >
+                    {% for item in cart.itens.all %}
+                      <tr>
+                        <td>
+                          <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-around">
+                            <div>
+                              <img src="{{item.product.photo.url}}" alt="{{item.name}}">
+                            </div>
+                            <div style="width: 50%;">
+                              {{ item.product.name }}
+                            </div>
+                          </div>
+                        </td>
+                        <td>R$ {{ item.product.price|floatformat:2 }}</td>
+                        <td>
+                          <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
+                            <form action="{% url 'decrease_quantity' item.pk %}" method="post">
+                              {% csrf_token %}
+                              {% if item.quantity > 1 %}
+                              <button type="submit"><strong>-</strong></button>
+                              {% else %}
+                              <button type="submit" onclick="return confirm('Tem certeza que deseja remover este item do carrinho?')">
+                                <strong>-</strong>
+                              </button>
+        
+                              {% endif %}
+                            </form>
+                            {{ item.quantity }}
+                            <form action="{% url 'add_to_cart' item.product.pk %}" method="post">
+                              {% csrf_token %}
+                              <button type="submit"><strong>+</strong></button>
+                            </form>
+        
+                          </div>
+                        </td>
+                        <td>R$ {{ item.get_subtotal|floatformat:2 }}</td>
+                      </tr>
+                        {% endfor %}
+                  </tbody>
+                </table>
             </div>
-          </div>
 
-      </div>
-     
-    {% else %} <!-- Caso não exista um carrinho ou itens  -->
+            <div class="order-footer">
+                <div class="total">
+                    Total: R$ {{ cart.total }}
+                </div>
 
-      <div id="summary-items" class="order-summary">
-        <h2>Resumo do Pedido</h2>
-        <div id="order-items">
-          <p>Seu carrinho está vazio.</p>
+                <button type="submit" class="btn-confirm">
+                    Confirmar Compra
+                </button>
+            </div>
+
         </div>
-        <div class="order-total">
-          <span>Total:</span>
-          <span id="order-total">R$ 0,00</span>
-        </div>
-      </div>
 
-    {% endif %}
-    
-  </main>
 
+    </div>
+</form>
 {% endblock content %}
