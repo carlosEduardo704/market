@@ -5,7 +5,7 @@ from order.mixins import RestrictUserMixin
 from django.urls import reverse_lazy
 # Django-Views
 from django.views.generic.edit import FormView
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import ListView, DetailView
 # Models
 from cart.models import Cart
 from order.models import Order, OrderItem
@@ -99,17 +99,15 @@ class CheckoutFormView(LoginRequiredMixin, FormView):
         return context
 
 
-class OrdersView(LoginRequiredMixin, TemplateView):
+class OrdersListView(LoginRequiredMixin, ListView):
     model = Order
     template_name = 'orders.html'
+    context_object_name = 'orders'
+    paginate_by = 10
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        
-        orders = [order for order in Order.objects.filter(user=self.request.user)]
-        context['orders'] = orders
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)
 
-        return context
 
 
 class OrderDetailView(RestrictUserMixin, LoginRequiredMixin, DetailView):
