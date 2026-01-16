@@ -19,6 +19,16 @@ class AddressModelForm(forms.ModelForm):
             'uf': 'Estado'
         }
 
+        fields = [
+            'adress_name',
+            'zip_code',
+            'street',
+            'number',
+            'city',
+            'district',
+            'uf'
+        ]
+
         widgets = {
             "user": forms.HiddenInput(),
             "created_at": forms.HiddenInput(),
@@ -28,6 +38,18 @@ class AddressModelForm(forms.ModelForm):
     def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = user
+
+        self.fields["adress_name"].widget.attrs["placeholder"] = "Nome do endereço"
+        self.fields["zip_code"].widget.attrs["placeholder"] = "Digite seu CEP"
+        self.fields["street"].widget.attrs["placeholder"] = "Rua"
+        self.fields["number"].widget.attrs["placeholder"] = "Número"
+        self.fields["city"].widget.attrs["placeholder"] = "Cidade"
+        self.fields["district"].widget.attrs["placeholder"] = "Bairro"
+        self.fields["uf"].widget.attrs["Estado"] = "Estado"
+
+        self.fields["uf"].choices = [
+            ("", "Estado")
+        ] + list(self.fields["uf"].choices)
 
     def clean(self):
         cleaned_data = super().clean()
