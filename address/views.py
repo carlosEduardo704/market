@@ -55,6 +55,14 @@ class UpdateAddressView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin)
     def get_queryset(self):
         return Address.objects.filter(user=self.request.user)
 
+    def get_success_url(self):
+        next_url = self.request.POST.get('next') or self.request.GET.get('next')
+
+        if next_url and url_has_allowed_host_and_scheme(url=next_url, allowed_hosts={self.request.get_host()}):
+            return next_url
+
+        return super().get_success_url()
+
 
 class RemoveAddressDeleteView(LoginRequiredMixin, DeleteView):
     model = Address
