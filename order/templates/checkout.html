@@ -217,13 +217,13 @@
                         <p>CEP: {{ address.zip_code }}</p>
                     </div>
 
-                    <a href="{% url 'update_address' address.id %}" class="btn-edit">
+                    <a href="{% url 'update_address' address.id %}?next={{ request.path}}" class="btn-edit">
                         Editar
                     </a>
                 </label>
             {% endfor %}
 
-            <a href="{% url 'create_address' %}" class="btn-add">
+            <a href="{% url 'create_address' %}?next={{ request.path}}" class="btn-add">
                 + Adicionar Endereço
             </a>
 
