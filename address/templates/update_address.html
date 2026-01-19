@@ -1,7 +1,7 @@
 {% extends "my_account.html" %}
 
 {% block content_section %}
-  <style>
+<style>
     #myAdresses {
         background: #4CAF50;
         color: white;
@@ -16,16 +16,149 @@
       color: #fff;
       margin-left: 6px;
     }
+  .address-card {
+    max-width: 50%;
+  }
+  /* Form */
+  .form-group {
+    margin-bottom: 16px;
+  }
 
-  </style>
-  <form method="post" id="address_form">
-    {% csrf_token %}
-      {% if form.non_fields_errors %}
-        <div class="alert-danger">
-        {{ form.non_fields_errors }}
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: #2f8f4e;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .cep-group {
+    display: flex;
+    gap: 10px;
+  }
+
+  .cep-group input {
+    flex: 1;
+  }
+
+  .cep-group button {
+    padding: 0 20px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .btn-submit {
+    width: 240px;
+    margin-top: 24px;
+    padding: 14px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+</style>
+
+<div class="address-card">
+
+    <h3>Atualizar Endereço</h3>
+
+    <form method="post">
+      {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="alert-danger">
+          {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+        <!-- CEP -->
+        <div class="form-group cep-group">
+            {{ form.zip_code}}
+            <button id="search_cep_button" type="button">Buscar</button>
         </div>
-      {% endif %}
-      {{ form.as_p}}
-      <button type="submit">Atualizar</button>
+
+        <!-- Nome -->
+        <div class="form-group">
+            {{form.adress_name}}
+        </div>
+
+        <!-- Rua -->
+        <div class="form-group">
+            {{ form.street }}
+        </div>
+
+        <!-- Número / Bairro -->
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.number}}
+            </div>
+            <div class="form-group">
+                {{ form.district }}
+            </div>
+        </div>
+
+        <!-- Cidade / Estado -->
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.city}}
+            </div>
+            <div class="form-group">
+                {{ form.uf }}
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">
+            Atualizar
+        </button>
     </form>
+
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      const cepInput = document.getElementById("id_zip_code");
+      const cep_search = document.getElementById("search_cep_button")
+
+      cep_search.addEventListener("click", function () {
+          
+          let cep = cepInput.value.replace(/\D/g, ""); // "/\D/g" garante que só tenha caracteres numéricos.
+
+          if (cep.length !== 8) {
+              return alert("CEP inválido");
+          }
+
+          let new_cep = cep.substring(0, 5) + '-' + cep.substring(5, 8);
+          cepInput.value = new_cep;
+
+          fetch(`https://viacep.com.br/ws/${cep}/json/`)
+              .then(response => response.json())
+              .then(data => {
+                  if (data.erro) {
+                      return alert("CEP não encontrado");
+                  }
+
+                  document.getElementById("id_street").value = data.logradouro;
+                  document.getElementById("id_district").value = data.bairro;
+                  document.getElementById("id_city").value = data.localidade;
+                  document.getElementById("id_uf").value = data.uf;
+              })
+              .catch(() => alert("Erro ao buscar CEP"));
+      });
+  });
+</script>
 {% endblock content_section %}
