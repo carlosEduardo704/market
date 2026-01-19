@@ -82,6 +82,11 @@
 
     <form method="post">
       {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="alert-danger">
+          {{ form.non_field_errors }}
+          </div>
+        {% endif %}
         <!-- CEP -->
         <div class="form-group cep-group">
             {{ form.zip_code}}
@@ -131,19 +136,20 @@
 
       cep_search.addEventListener("click", function () {
           
-          let cep = cepInput.value.replace(/\D/g, "");
+          let cep = cepInput.value.replace(/\D/g, ""); // "/\D/g" garante que só tenha caracteres numéricos.
 
           if (cep.length !== 8) {
-              alert("CEP inválido");
-              return;
+              return alert("CEP inválido");
           }
+
+          let new_cep = cep.substring(0, 5) + '-' + cep.substring(5, 8);
+          cepInput.value = new_cep;
 
           fetch(`https://viacep.com.br/ws/${cep}/json/`)
               .then(response => response.json())
               .then(data => {
                   if (data.erro) {
-                      alert("CEP não encontrado");
-                      return;
+                      return alert("CEP não encontrado");
                   }
 
                   document.getElementById("id_street").value = data.logradouro;
