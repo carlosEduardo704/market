@@ -46,28 +46,10 @@
         </div>
       {% endfor %}
     {% else %}
-      
+      <p>Não há endereços cadastrados!</p>
     {% endif %}
     <a href="{% url 'create_address' %}?next={{ request.path }}">
       <button id="btn" class="btn" style="margin-top: 10px;">+ Adicionar novo endereço</button>
     </a>
   </section>
-
-  <!-- <script>
-    btn = document.getElementById('btn');
-    form = document.getElementById('address_form');
-    message = document.getElementById('message');
-
-    btn.addEventListener('click', () => {
-      if(form.style.display === 'none') {
-        form.style.display = 'block'
-        btn.style.display = 'none'
-        message.style.display = 'none'
-      } else {
-        form.style.display = 'none'
-        btn.style.display = 'block'
-        message.style.display = 'block'
-      }
-    });
-  </script> -->
 {% endblock content_section %}
