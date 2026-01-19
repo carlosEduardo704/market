@@ -10,34 +10,36 @@
   <!-- Meus Pedidos -->
   <section class="content-section">
       <h1>Meus Pedidos</h1>
-      {% for order in orders %}
-        <a href="{% url 'order_detail' order.pk %}" style="text-decoration: none; color: inherit;">
-          <div class="order-item">
-          <strong>Pedido #{{order.id}}</strong> — {{order.created_at}} <br>
-          Total: <span style="color:#4CAF50;">{{ order.total }}</span>
-          {% for item in orders.itens  %}
-            <p>{{ item }}</p>
-          {% endfor %}
-          </div>
-        </a>
-      {% endfor %}
-      <div class="pagination">
+      {% if orders %}
+        {% for order in orders %}
+          <a href="{% url 'order_detail' order.pk %}" style="text-decoration: none; color: inherit;">
+            <div class="order-item">
+            <strong>Pedido #{{order.id}}</strong> — {{order.created_at}} <br>
+            Total: <span style="color:#4CAF50;">{{ order.total }}</span>
+            {% for item in orders.itens  %}
+              <p>{{ item }}</p>
+            {% endfor %}
+            </div>
+          </a>
+        {% endfor %}
+        <div class="pagination">
 
-          {% if page_obj.has_previous %}
-              <a href="?page=1">« Primeira</a>
-              <a href="?page={{ page_obj.previous_page_number}}">‹ Anterior</a>
-          {% endif %}
+            {% if page_obj.has_previous %}
+                <a href="?page=1">« Primeira</a>
+                <a href="?page={{ page_obj.previous_page_number}}">‹ Anterior</a>
+            {% endif %}
 
-          <span>
-              Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
-          </span>
+            <span>
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            </span>
 
-          {% if page_obj.has_next %}
-              <a href="?page={{ page_obj.next_page_number}}">Próxima ›</a>
-              <a href="?page={{ page_obj.paginator.num_pages }}">Última »</a>
-          {% endif %}
-
-      </div>
-
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number}}">Próxima ›</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">Última »</a>
+            {% endif %}
+        </div>
+      {% else %}
+        <p>Não há pedidos!</p>
+      {% endif %}
   </section>
 {% endblock content_section %}
