@@ -1,5 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django import forms
+from django.contrib.auth.models import User
 
 class CustomUserCreationForm(UserCreationForm):
 
@@ -17,3 +18,16 @@ class CustomAuthenticationForm(AuthenticationForm):
         'invalid_login': 'Usuário ou senha inválidos. Por favor, tente novamente!',
         'inactive': 'Usuário inativo. Por favor, contate o suporte!'
     }
+
+
+class UserUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+        labels = {
+            'first_name': 'Nome',
+            'last_name': 'Sobrenome',
+            'email': 'Email'
+        }
