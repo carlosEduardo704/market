@@ -1,0 +1,67 @@
+{% extends "my_account.html" %}
+
+{% block content_section %}
+  <style>
+    #myAccount {
+      background: #4CAF50;
+      color: white;
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #2f8f4e;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .btn-submit {
+    width: 240px;
+    margin-top: 24px;
+    padding: 14px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  </style>
+  <!-- Minha Conta -->
+  <section class="content-section">
+    <h1>Editar informações da conta</h1>
+    <div class="info-box">
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form  %}
+          <div class="form-group">
+              <strong>{{ field.label }}:</strong>
+              {{ field }}
+          </div>
+        {% endfor %}
+
+        <button type="submit" class="btn-submit">
+            Atualizar
+        </button>
+      </form>
+    </div>
+  </section>
+{% endblock content_section %}
