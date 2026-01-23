@@ -84,6 +84,14 @@ input:focus {
       <label for="name">Usuario</label>
       {{ form.username }}
 
+      {{ form.firt_name.errors }}
+      <label for="name">Nome</label>
+      {{ form.first_name }}
+
+      {{ form.last_name.errors }}
+      <label for="name">Sobrenome</label>
+      {{ form.last_name }}
+
       {{form.email.errors }}
       <label for="email">E-mail</label>
       {{ form.email }}
@@ -104,6 +112,23 @@ input:focus {
     </div>
   </div>
 </div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
 
+    const first_name_input = document.getElementById("id_first_name");
+    const last_name_input = document.getElementById("id_last_name")
+
+    function captalizeFirstLetter(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    }
+
+    first_name_input.addEventListener("change", function () {
+      first_name_input.value = captalizeFirstLetter(first_name_input.value)
+    });
+
+    last_name_input.addEventListener("change", function () {
+      last_name_input.value = captalizeFirstLetter(last_name_input.value)
+    });
+  });
+</script>
 {% endblock content %}
-
