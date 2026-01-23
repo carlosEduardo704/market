@@ -14,9 +14,11 @@
       <p><strong>Nome:</strong> {{user.first_name}} {{user.last_name}}</p>
       <p><strong>Email:</strong> {{user.email}}</p>
       <hr>
-      <button class="btn">
-          Editar Informações
-      </button>
+      <a href="{% url 'user_update_information' user.pk %}">
+        <button class="btn">
+            Editar Informações
+        </button>
+      </a>
     </div>
   </section>
 {% endblock content_section %}
